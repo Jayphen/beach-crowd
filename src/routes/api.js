@@ -10,6 +10,7 @@ import {
   getLatestSnapshot,
   getCurrentBusyness,
   getSnapshotHistory,
+  getSnapshotHistoryByRange,
   getAllLatestSnapshots,
   getBeachStatistics,
   getHourlyAverages
@@ -79,6 +80,47 @@ export function createApp() {
   // Route: GET /api/beaches/:beachId/history - Get snapshot history
   app.get('/api/beaches/:beachId/history', async (c) => {
     const beachId = c.req.param('beachId');
+    const range = c.req.query('range');
+
+    // If range parameter is provided (e.g., "7d", "1d", "30d"), use time-based query
+    if (range) {
+      // Parse range: extract number and unit (e.g., "7d" => 7 days)
+      const match = range.match(/^(\d+)([dhm])$/);
+      if (!match) {
+        return c.json({
+          error: 'Invalid range format. Use format like "7d" (days), "24h" (hours), or "30m" (minutes)'
+        }, 400);
+      }
+
+      const value = parseInt(match[1]);
+      const unit = match[2];
+
+      // Convert to days for the database query
+      let daysBack;
+      switch (unit) {
+        case 'd':
+          daysBack = value;
+          break;
+        case 'h':
+          daysBack = value / 24;
+          break;
+        case 'm':
+          daysBack = value / (24 * 60);
+          break;
+        default:
+          return c.json({ error: 'Invalid time unit. Use "d" (days), "h" (hours), or "m" (minutes)' }, 400);
+      }
+
+      const history = await getSnapshotHistoryByRange(c.env.DB, beachId, daysBack);
+      return c.json({
+        history,
+        count: history.length,
+        range: range,
+        days_back: daysBack
+      });
+    }
+
+    // Otherwise, use pagination-based query (legacy support)
     const limit = parseInt(c.req.query('limit') || '100');
     const offset = parseInt(c.req.query('offset') || '0');
 
@@ -186,8 +228,8 @@ function getApiDocs() {
 
   <div class="endpoint">
     <span class="method get">GET</span>
-    <code>/api/beaches/:beachId/history?limit=100&offset=0</code>
-    <p>Get snapshot history for a beach</p>
+    <code>/api/beaches/:beachId/history?range=7d</code>
+    <p>Get snapshot history for a beach within a time range (e.g., "7d" for 7 days, "24h" for 24 hours, "30m" for 30 minutes). Also supports pagination with ?limit=100&offset=0</p>
   </div>
 
   <div class="endpoint">

@@ -176,6 +176,24 @@ export async function getSnapshotHistory(db, beachId, limit = 100, offset = 0) {
 }
 
 /**
+ * Get snapshot history for a beach within a time range
+ */
+export async function getSnapshotHistoryByRange(db, beachId, daysBack = 7) {
+  const sinceTimestamp = Math.floor(Date.now() / 1000) - (daysBack * 24 * 60 * 60);
+
+  const result = await db.prepare(`
+    SELECT s.captured_at, s.image_url, b.busyness_score, b.person_count, b.detection_method, b.confidence
+    FROM snapshots s
+    LEFT JOIN busyness_scores b ON s.id = b.snapshot_id
+    WHERE s.beach_id = ?
+      AND s.captured_at >= ?
+    ORDER BY s.captured_at ASC
+  `).bind(beachId, sinceTimestamp).all();
+
+  return result.results || [];
+}
+
+/**
  * Get all latest snapshots for all beaches
  */
 export async function getAllLatestSnapshots(db) {
