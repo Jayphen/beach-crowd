@@ -8,6 +8,7 @@ import {
   getActiveBeaches,
   getBeach,
   getLatestSnapshot,
+  getCurrentBusyness,
   getSnapshotHistory,
   getAllLatestSnapshots,
   getBeachStatistics,
@@ -61,6 +62,18 @@ export function createApp() {
     }
 
     return c.json({ snapshot });
+  });
+
+  // Route: GET /api/beaches/:beachId/current - Get current busyness
+  app.get('/api/beaches/:beachId/current', async (c) => {
+    const beachId = c.req.param('beachId');
+    const busyness = await getCurrentBusyness(c.env.DB, beachId);
+
+    if (!busyness) {
+      return c.json({ error: 'No busyness data found for this beach' }, 404);
+    }
+
+    return c.json({ busyness });
   });
 
   // Route: GET /api/beaches/:beachId/history - Get snapshot history
@@ -167,6 +180,12 @@ function getApiDocs() {
 
   <div class="endpoint">
     <span class="method get">GET</span>
+    <code>/api/beaches/:beachId/current</code>
+    <p>Get current busyness data for a beach</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span>
     <code>/api/beaches/:beachId/history?limit=100&offset=0</code>
     <p>Get snapshot history for a beach</p>
   </div>
@@ -195,7 +214,7 @@ function getApiDocs() {
     <p>Serve beach images from R2 storage</p>
   </div>
 
-  <h2>Example Response</h2>
+  <h2>Example Responses</h2>
   <pre>{
   "snapshot": {
     "id": "abc123...",
@@ -205,6 +224,17 @@ function getApiDocs() {
     "busyness_score": 75,
     "person_count": 120,
     "detection_method": "yolo"
+  }
+}</pre>
+
+  <pre>{
+  "busyness": {
+    "beach_id": "bondi",
+    "captured_at": 1737639000,
+    "busyness_score": 75,
+    "person_count": 120,
+    "detection_method": "yolo",
+    "confidence": 0.92
   }
 }</pre>
 

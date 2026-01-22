@@ -138,6 +138,28 @@ export async function getLatestSnapshot(db, beachId) {
 }
 
 /**
+ * Get current busyness for a beach
+ */
+export async function getCurrentBusyness(db, beachId) {
+  const result = await db.prepare(`
+    SELECT
+      s.beach_id,
+      s.captured_at,
+      b.busyness_score,
+      b.person_count,
+      b.detection_method,
+      b.confidence
+    FROM snapshots s
+    INNER JOIN busyness_scores b ON s.id = b.snapshot_id
+    WHERE s.beach_id = ?
+    ORDER BY s.captured_at DESC
+    LIMIT 1
+  `).bind(beachId).first();
+
+  return result;
+}
+
+/**
  * Get snapshot history for a beach
  */
 export async function getSnapshotHistory(db, beachId, limit = 100, offset = 0) {
