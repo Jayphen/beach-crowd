@@ -29,10 +29,10 @@
 [x] Create API endpoint: GET /api/beaches/compare?ids=bondi,manly (compare beaches)
 
 ### Week 5-6: Frontend (SvelteKit + shadcn-svelte)
-[ ] Initialize SvelteKit project
-[ ] Set up shadcn-svelte component library
-[ ] Configure Tailwind CSS
-[ ] Build Home page: Map of Sydney beaches with color-coded busyness
+[x] Initialize SvelteKit project
+[x] Set up shadcn-svelte component library
+[x] Configure Tailwind CSS
+[X] Build Home page: Map of Sydney beaches with color-coded busyness - COMPLETED 2026-01-23
 [ ] Build Beach Detail page: Live webcam + graph + predictions
 [ ] Build Compare page: Side-by-side comparison
 [ ] Implement beach list with shadcn-svelte components
