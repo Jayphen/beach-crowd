@@ -271,6 +271,49 @@ export async function getHourlyAverages(db, beachId, daysBack = 30) {
 }
 
 /**
+ * Compare multiple beaches by their latest snapshots
+ */
+export async function compareBeaches(db, beachIds) {
+  if (!beachIds || beachIds.length === 0) {
+    return [];
+  }
+
+  // Create placeholders for SQL IN clause
+  const placeholders = beachIds.map(() => '?').join(',');
+
+  const result = await db.prepare(`
+    SELECT
+      beach.id as beach_id,
+      beach.name as beach_name,
+      beach.location,
+      beach.latitude,
+      beach.longitude,
+      s.id as snapshot_id,
+      s.image_url,
+      s.captured_at,
+      s.weather_condition,
+      s.temperature_celsius,
+      b.busyness_score,
+      b.person_count,
+      b.detection_method,
+      b.confidence
+    FROM beaches beach
+    LEFT JOIN (
+      SELECT beach_id, MAX(captured_at) as max_captured_at
+      FROM snapshots
+      WHERE beach_id IN (${placeholders})
+      GROUP BY beach_id
+    ) latest ON beach.id = latest.beach_id
+    LEFT JOIN snapshots s ON beach.id = s.beach_id AND s.captured_at = latest.max_captured_at
+    LEFT JOIN busyness_scores b ON s.id = b.snapshot_id
+    WHERE beach.id IN (${placeholders})
+    ORDER BY beach.id
+  `).bind(...beachIds, ...beachIds).all();
+
+  return result.results || [];
+}
+
+/**
  * Clean up old snapshots (for scheduled cleanup tasks)
  */
 export async function cleanupOldSnapshots(db, daysToKeep = 90) {

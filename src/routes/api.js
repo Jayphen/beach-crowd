@@ -13,7 +13,8 @@ import {
   getSnapshotHistoryByRange,
   getAllLatestSnapshots,
   getBeachStatistics,
-  getHourlyAverages
+  getHourlyAverages,
+  compareBeaches
 } from '../lib/db.js';
 import { serveImage } from '../lib/r2.js';
 
@@ -146,6 +147,41 @@ export function createApp() {
     return c.json({ hourly });
   });
 
+  // Route: GET /api/beaches/compare - Compare multiple beaches
+  app.get('/api/beaches/compare', async (c) => {
+    const idsParam = c.req.query('ids');
+
+    if (!idsParam) {
+      return c.json({
+        error: 'Missing required parameter: ids',
+        example: '/api/beaches/compare?ids=bondi,manly'
+      }, 400);
+    }
+
+    // Parse comma-separated beach IDs
+    const beachIds = idsParam.split(',').map(id => id.trim()).filter(id => id.length > 0);
+
+    if (beachIds.length === 0) {
+      return c.json({
+        error: 'No valid beach IDs provided',
+        example: '/api/beaches/compare?ids=bondi,manly'
+      }, 400);
+    }
+
+    const comparison = await compareBeaches(c.env.DB, beachIds);
+
+    // Check if all requested beaches were found
+    const foundBeachIds = comparison.map(b => b.beach_id);
+    const notFound = beachIds.filter(id => !foundBeachIds.includes(id));
+
+    return c.json({
+      beaches: comparison,
+      count: comparison.length,
+      requested: beachIds,
+      not_found: notFound.length > 0 ? notFound : undefined
+    });
+  });
+
   // Route: GET /api/current - Get all current beach statuses
   app.get('/api/current', async (c) => {
     const snapshots = await getAllLatestSnapshots(c.env.DB);
@@ -242,6 +278,12 @@ function getApiDocs() {
     <span class="method get">GET</span>
     <code>/api/beaches/:beachId/hourly?days=30</code>
     <p>Get hourly averages for predictions (default: last 30 days)</p>
+  </div>
+
+  <div class="endpoint">
+    <span class="method get">GET</span>
+    <code>/api/beaches/compare?ids=bondi,manly</code>
+    <p>Compare multiple beaches by their latest snapshots (comma-separated beach IDs)</p>
   </div>
 
   <div class="endpoint">
