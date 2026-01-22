@@ -21,9 +21,9 @@
 [x] Calculate busyness score algorithm (0-100 based on beach area)
 [X] Implement fallback pixel density analysis - COMPLETED 2026-01-23
 [x] Store data in Cloudflare D1 (SQLite) + R2 (images)
-[ ] Set up Cloudflare Workers for API
-[ ] Implement Hono routing for edge-native API
-[ ] Create API endpoint: GET /api/beaches (list all monitored beaches)
+[x] Set up Cloudflare Workers for API
+[x] Implement Hono routing for edge-native API
+[X] Create API endpoint: GET /api/beaches (list all monitored beaches) - COMPLETED 2026-01-23
 [ ] Create API endpoint: GET /api/beaches/:id/current (current busyness)
 [ ] Create API endpoint: GET /api/beaches/:id/history?range=7d (historical data)
 [ ] Create API endpoint: GET /api/beaches/compare?ids=bondi,manly (compare beaches)
