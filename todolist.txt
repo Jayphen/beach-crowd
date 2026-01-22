@@ -2,7 +2,7 @@
 # Generated from PRD v1.0 - 2026-01-23
 
 ## IMMEDIATE TASKS (This Week)
-[ ] Research Sydney beach webcam URLs (find 10-15 candidates)
+[X] Research Sydney beach webcam URLs (find 10-15 candidates) - COMPLETED 2026-01-23
 [ ] Test Playwright scraper on 1 beach (Bondi)
 [ ] Validate YOLOv8 person detection accuracy
 
