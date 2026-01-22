@@ -17,7 +17,7 @@
 [x] Store 1 week of test data
 
 ### Week 3-4: Computer Vision & Backend
-[ ] Integrate YOLOv8 for person detection
+[x] Integrate YOLOv8 for person detection
 [ ] Calculate busyness score algorithm (0-100 based on beach area)
 [ ] Implement fallback pixel density analysis
 [ ] Store data in Cloudflare D1 (SQLite) + R2 (images)

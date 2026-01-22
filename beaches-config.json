@@ -5,6 +5,13 @@
       "name": "Bondi Beach",
       "location": "Waverley Council, Eastern Suburbs",
       "enabled": true,
+      "visible_area_sqm": 5000,
+      "density_thresholds": {
+        "quiet_density": 0.5,
+        "moderate_density": 2.0,
+        "busy_density": 4.0,
+        "very_busy_density": 8.0
+      },
       "webcams": [
         {
           "id": "bondi-surf-club",
@@ -27,6 +34,13 @@
       "name": "Manly Beach",
       "location": "Northern Beaches Council",
       "enabled": true,
+      "visible_area_sqm": 4500,
+      "density_thresholds": {
+        "quiet_density": 0.5,
+        "moderate_density": 2.0,
+        "busy_density": 4.0,
+        "very_busy_density": 8.0
+      },
       "webcams": [
         {
           "id": "manly-pacific",
@@ -42,6 +56,13 @@
       "name": "Coogee Beach",
       "location": "Randwick City Council, Eastern Suburbs",
       "enabled": true,
+      "visible_area_sqm": 3500,
+      "density_thresholds": {
+        "quiet_density": 0.5,
+        "moderate_density": 2.0,
+        "busy_density": 4.0,
+        "very_busy_density": 8.0
+      },
       "webcams": [
         {
           "id": "coogee-council",
@@ -57,6 +78,13 @@
       "name": "Bronte Beach",
       "location": "Waverley Council, Eastern Suburbs",
       "enabled": false,
+      "visible_area_sqm": 2500,
+      "density_thresholds": {
+        "quiet_density": 0.5,
+        "moderate_density": 2.0,
+        "busy_density": 4.0,
+        "very_busy_density": 8.0
+      },
       "webcams": [],
       "notes": "Limited webcam availability - needs investigation"
     },
@@ -65,6 +93,13 @@
       "name": "Maroubra Beach",
       "location": "Randwick City Council, Eastern Suburbs",
       "enabled": true,
+      "visible_area_sqm": 6000,
+      "density_thresholds": {
+        "quiet_density": 0.5,
+        "moderate_density": 2.0,
+        "busy_density": 4.0,
+        "very_busy_density": 8.0
+      },
       "webcams": [
         {
           "id": "maroubra-brasurf",

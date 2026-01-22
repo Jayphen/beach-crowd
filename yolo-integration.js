@@ -8,7 +8,98 @@ const path = require('path');
  */
 
 /**
- * Calculate busyness score based on person count
+ * Calculate person density per 100 square meters
+ *
+ * @param {number} personCount - Number of people detected
+ * @param {number} areaSqm - Beach area in square meters
+ * @returns {number} Density (people per 100 sqm)
+ */
+function calculateDensity(personCount, areaSqm) {
+  if (!areaSqm || areaSqm <= 0) {
+    throw new Error('Beach area must be a positive number');
+  }
+  return (personCount / areaSqm) * 100;
+}
+
+/**
+ * Calculate busyness score based on person density and beach area
+ * Uses a sophisticated algorithm that normalizes crowd levels across different beach sizes
+ *
+ * @param {number} personCount - Number of people detected
+ * @param {Object} options - Configuration options
+ * @param {number} options.beachArea - Visible beach area in square meters
+ * @param {number} options.quietDensity - Density threshold for quiet (people per 100 sqm)
+ * @param {number} options.moderateDensity - Density threshold for moderate (people per 100 sqm)
+ * @param {number} options.busyDensity - Density threshold for busy (people per 100 sqm)
+ * @param {number} options.veryBusyDensity - Density threshold for very busy (people per 100 sqm)
+ * @returns {Object} Object containing score, density, and level
+ */
+function calculateBusynessScoreWithArea(personCount, options = {}) {
+  const {
+    beachArea = null,
+    quietDensity = 0.5,      // 0.5 people per 100 sqm = quiet
+    moderateDensity = 2.0,   // 2.0 people per 100 sqm = moderate
+    busyDensity = 4.0,       // 4.0 people per 100 sqm = busy
+    veryBusyDensity = 8.0    // 8.0 people per 100 sqm = very busy
+  } = options;
+
+  // Validate inputs
+  if (personCount < 0) {
+    throw new Error('Person count cannot be negative');
+  }
+
+  if (!beachArea) {
+    throw new Error('Beach area is required for density-based calculation');
+  }
+
+  // Calculate density (people per 100 square meters)
+  const density = calculateDensity(personCount, beachArea);
+
+  // Calculate score based on density thresholds
+  let score;
+  let level;
+
+  if (density === 0) {
+    // Empty beach
+    score = 0;
+    level = 'Empty';
+  } else if (density <= quietDensity) {
+    // Quiet: 0-25 score (non-linear curve for better UX)
+    score = Math.round((density / quietDensity) * 25);
+    level = 'Quiet';
+  } else if (density <= moderateDensity) {
+    // Moderate: 25-50 score
+    const range = moderateDensity - quietDensity;
+    const position = density - quietDensity;
+    score = Math.round(25 + (position / range) * 25);
+    level = 'Moderate';
+  } else if (density <= busyDensity) {
+    // Busy: 50-75 score
+    const range = busyDensity - moderateDensity;
+    const position = density - moderateDensity;
+    score = Math.round(50 + (position / range) * 25);
+    level = 'Busy';
+  } else {
+    // Very Busy: 75-100 score
+    const range = veryBusyDensity - busyDensity;
+    const position = Math.min(density - busyDensity, range);
+    score = Math.round(75 + (position / range) * 25);
+    score = Math.min(score, 100); // Cap at 100
+    level = 'Very Busy';
+  }
+
+  return {
+    score,
+    level,
+    density: parseFloat(density.toFixed(2)),
+    personCount,
+    beachArea
+  };
+}
+
+/**
+ * Calculate busyness score based on person count (legacy method)
+ * Kept for backward compatibility
  *
  * @param {number} personCount - Number of people detected
  * @param {Object} options - Configuration options
@@ -245,6 +336,8 @@ module.exports = {
   detectPersons,
   analyzeBeachCrowd,
   calculateBusynessScore,
+  calculateBusynessScoreWithArea,
+  calculateDensity,
   getBusynessLevel,
   checkDependencies
 };
