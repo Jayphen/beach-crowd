@@ -214,29 +214,153 @@ async function detectPersons(imagePath, options = {}) {
 }
 
 /**
+ * Detect persons using pixel density analysis (fallback method)
+ *
+ * @param {string} imagePath - Path to the image file
+ * @param {Object} options - Detection options
+ * @returns {Promise<Object>} Detection results from pixel density analysis
+ */
+async function detectPersonsPixelDensity(imagePath, options = {}) {
+  const {
+    beachArea = 5000,
+    saveDebug = false,
+    pythonPath = path.join(__dirname, 'venv', 'bin', 'python3')
+  } = options;
+
+  return new Promise((resolve, reject) => {
+    const scriptPath = path.join(__dirname, 'pixel-density-analyzer.py');
+
+    const args = [
+      scriptPath,
+      imagePath,
+      '--beach-area', beachArea.toString(),
+      '--json'
+    ];
+
+    if (saveDebug) {
+      args.push('--save-debug');
+    }
+
+    const pythonProcess = spawn(pythonPath, args);
+
+    let outputData = '';
+    let errorData = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      outputData += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      errorData += data.toString();
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Pixel density analyzer failed with code ${code}: ${errorData}`));
+        return;
+      }
+
+      try {
+        const result = JSON.parse(outputData);
+        resolve(result);
+      } catch (error) {
+        reject(new Error(`Failed to parse pixel density output: ${error.message}\nOutput: ${outputData}`));
+      }
+    });
+
+    pythonProcess.on('error', (error) => {
+      reject(new Error(`Failed to start Python process: ${error.message}`));
+    });
+  });
+}
+
+/**
  * Analyze beach crowd from image
  * Combines person detection with busyness scoring
+ * Automatically falls back to pixel density analysis if YOLO fails
  *
  * @param {string} imagePath - Path to the beach screenshot
  * @param {Object} options - Analysis options
+ * @param {boolean} options.useFallback - Enable pixel density fallback (default: true)
  * @returns {Promise<Object>} Complete analysis with person count, confidence, and busyness score
  */
 async function analyzeBeachCrowd(imagePath, options = {}) {
   const startTime = Date.now();
+  const useFallback = options.useFallback !== undefined ? options.useFallback : true;
 
   try {
     // Run YOLOv8 person detection
     const detectionResult = await detectPersons(imagePath, options);
 
     if (!detectionResult.success) {
-      return {
-        success: false,
-        error: detectionResult.error,
-        image_path: imagePath,
-        analysis_duration: ((Date.now() - startTime) / 1000).toFixed(2)
-      };
+      // YOLO failed - try pixel density fallback if enabled
+      if (useFallback) {
+        console.warn(`⚠️  YOLO detection failed: ${detectionResult.error}`);
+        console.warn(`🔄 Falling back to pixel density analysis...`);
+
+        try {
+          const fallbackResult = await detectPersonsPixelDensity(imagePath, {
+            beachArea: options.beachArea || 5000,
+            saveDebug: options.saveDebug || false,
+            pythonPath: options.pythonPath
+          });
+
+          if (!fallbackResult.success) {
+            return {
+              success: false,
+              error: `Both YOLO and fallback failed. YOLO: ${detectionResult.error}, Fallback: ${fallbackResult.error}`,
+              image_path: imagePath,
+              analysis_duration: ((Date.now() - startTime) / 1000).toFixed(2)
+            };
+          }
+
+          // Use fallback results
+          const personCount = fallbackResult.detections.total_persons;
+          const busynessScore = calculateBusynessScore(personCount, options.busynessThresholds);
+          const busynessLevel = getBusynessLevel(busynessScore);
+
+          const analysisDuration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+          return {
+            success: true,
+            image_path: imagePath,
+            method: 'pixel_density_fallback',
+            person_count: personCount,
+            busyness_score: busynessScore,
+            busyness_level: busynessLevel,
+            confidence_stats: {
+              min: fallbackResult.detections.min_confidence,
+              max: fallbackResult.detections.max_confidence,
+              avg: fallbackResult.detections.avg_confidence
+            },
+            confidence_distribution: fallbackResult.detections.confidence_distribution,
+            pixel_analysis: fallbackResult.analysis,
+            analysis_duration: parseFloat(analysisDuration),
+            timestamp: new Date().toISOString(),
+            fallback_used: true,
+            fallback_reason: detectionResult.error
+          };
+
+        } catch (fallbackError) {
+          return {
+            success: false,
+            error: `Both YOLO and fallback failed. YOLO: ${detectionResult.error}, Fallback: ${fallbackError.message}`,
+            image_path: imagePath,
+            analysis_duration: ((Date.now() - startTime) / 1000).toFixed(2)
+          };
+        }
+      } else {
+        // Fallback disabled, return error
+        return {
+          success: false,
+          error: detectionResult.error,
+          image_path: imagePath,
+          analysis_duration: ((Date.now() - startTime) / 1000).toFixed(2)
+        };
+      }
     }
 
+    // YOLO succeeded
     const personCount = detectionResult.detections.total_persons;
     const busynessScore = calculateBusynessScore(personCount, options.busynessThresholds);
     const busynessLevel = getBusynessLevel(busynessScore);
@@ -246,6 +370,7 @@ async function analyzeBeachCrowd(imagePath, options = {}) {
     return {
       success: true,
       image_path: imagePath,
+      method: 'yolo',
       model: detectionResult.model,
       confidence_threshold: detectionResult.confidence_threshold,
       person_count: personCount,
@@ -259,7 +384,8 @@ async function analyzeBeachCrowd(imagePath, options = {}) {
       confidence_distribution: detectionResult.detections.confidence_distribution,
       annotated_image_path: detectionResult.annotated_image_path,
       analysis_duration: parseFloat(analysisDuration),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      fallback_used: false
     };
 
   } catch (error) {
@@ -334,6 +460,7 @@ except ImportError as e:
 
 module.exports = {
   detectPersons,
+  detectPersonsPixelDensity,
   analyzeBeachCrowd,
   calculateBusynessScore,
   calculateBusynessScoreWithArea,
