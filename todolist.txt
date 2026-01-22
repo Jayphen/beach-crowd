@@ -1,0 +1,127 @@
+# BeachWatch Development Todo List
+# Generated from PRD v1.0 - 2026-01-23
+
+## IMMEDIATE TASKS (This Week)
+[ ] Research Sydney beach webcam URLs (find 10-15 candidates)
+[ ] Test Playwright scraper on 1 beach (Bondi)
+[ ] Validate YOLOv8 person detection accuracy
+
+## PHASE 1: MVP (Weeks 1-6)
+
+### Week 1-2: Proof of Concept
+[ ] Find 5 Sydney beach webcam URLs (Bondi, Manly, Coogee, Bronte, Maroubra)
+[ ] Build Playwright scraper to capture screenshots
+[ ] Store screenshots locally with timestamp
+[ ] Set up Cloudflare D1 database schema
+[ ] Set up Cloudflare R2 bucket for image storage
+[ ] Store 1 week of test data
+
+### Week 3-4: Computer Vision & Backend
+[ ] Integrate YOLOv8 for person detection
+[ ] Calculate busyness score algorithm (0-100 based on beach area)
+[ ] Implement fallback pixel density analysis
+[ ] Store data in Cloudflare D1 (SQLite) + R2 (images)
+[ ] Set up Cloudflare Workers for API
+[ ] Implement Hono routing for edge-native API
+[ ] Create API endpoint: GET /api/beaches (list all monitored beaches)
+[ ] Create API endpoint: GET /api/beaches/:id/current (current busyness)
+[ ] Create API endpoint: GET /api/beaches/:id/history?range=7d (historical data)
+[ ] Create API endpoint: GET /api/beaches/compare?ids=bondi,manly (compare beaches)
+
+### Week 5-6: Frontend (SvelteKit + shadcn-svelte)
+[ ] Initialize SvelteKit project
+[ ] Set up shadcn-svelte component library
+[ ] Configure Tailwind CSS
+[ ] Build Home page: Map of Sydney beaches with color-coded busyness
+[ ] Build Beach Detail page: Live webcam + graph + predictions
+[ ] Build Compare page: Side-by-side comparison
+[ ] Implement beach list with shadcn-svelte components
+[ ] Show live busyness score + last captured image
+[ ] Display 7-day historical graph (Chart.js or D3.js)
+[ ] Implement busyness badge component (Quiet / Moderate / Busy / Very Busy)
+[ ] Make design mobile-responsive
+[ ] Deploy to Cloudflare Pages
+[ ] Test end-to-end: scraper → analysis → API → frontend
+
+### Week 5-6: Automation
+[ ] Set up Cloudflare Workers Cron for scheduled tasks
+[ ] Implement cron: Every 10 minutes - scrape webcams → analyze → store
+[ ] Implement cron: Every hour - update predictions based on patterns
+[ ] Implement cron: Daily - clean up old images (keep only samples)
+
+### MVP Launch Checklist
+[ ] Verify 5 beaches are monitored
+[ ] Verify live busyness score updates every 10 minutes
+[ ] Verify 7-day historical data is visible
+[ ] Verify mobile-responsive design works on iOS/Android
+[ ] Soft launch to 50 beta users (friends, family, surf community)
+[ ] Collect feedback on accuracy and UX
+
+## PHASE 2: Enhanced Intelligence (Weeks 7-12)
+[ ] Integrate weather API (sunny days = busier)
+[ ] Correlate with tide data
+[ ] Implement school holiday detection (crowd spikes)
+[ ] Train machine learning model to predict future busyness
+[ ] Add 10 more beaches to monitoring
+[ ] Implement "Best Time" predictor: "Typically quiet Mon-Fri before 10am"
+[ ] Add seasonal trends display (Summer vs Winter patterns)
+
+## PHASE 3: Community & Alerts (Weeks 13-18)
+[ ] Build user authentication system
+[ ] Create user accounts feature
+[ ] Implement push notification infrastructure
+[ ] Build "Notify Me When Quiet" alert feature
+[ ] Build daily digest email: "Best beach to visit today"
+[ ] Add user-submitted crowd reports (crowdsourced validation)
+[ ] Implement beach favorites/watchlist feature
+[ ] Build user profile page
+
+## PHASE 4: Monetization (Weeks 19-24)
+[ ] Design premium tier features ($4.99/month or $39/year)
+[ ] Unlock all beaches (20+) for premium users
+[ ] Implement premium push notifications
+[ ] Add 30-day historical data view for premium
+[ ] Create ad-free experience toggle
+[ ] Build "Best time" advanced predictions for premium
+[ ] Design B2B/API access tier ($299/month)
+[ ] Create council dashboards for resource planning
+[ ] Build tourism board visitor insights dashboard
+[ ] Implement API access for surf schools
+[ ] Set up advertising infrastructure (if pursuing)
+[ ] Create sponsored beaches feature
+
+## TECHNICAL DEBT & OPTIMIZATION
+[ ] Optimize YOLOv8 model per beach (custom training for different camera angles)
+[ ] Implement comprehensive error handling for webcam failures
+[ ] Add monitoring and alerting for system uptime
+[ ] Optimize Cloudflare Workers performance
+[ ] Implement caching strategy for API responses
+[ ] Add unit tests for busyness score calculation
+[ ] Add integration tests for API endpoints
+[ ] Add E2E tests for critical user flows
+[ ] Document API endpoints (OpenAPI spec)
+[ ] Create developer documentation
+
+## RESEARCH & VALIDATION
+[ ] Validate ML accuracy target (80%+ correct predictions)
+[ ] Measure latency: webcam capture to data visible (target <2 minutes)
+[ ] Track uptime: % of time data is fresh (target 95%+)
+[ ] Define busyness thresholds (busy vs quiet - absolute count or % capacity?)
+[ ] Establish relationships with councils for official API access
+[ ] Research privacy policy requirements
+[ ] Finalize brand name (BeachWatch, CrowdCast, QuietBeach, BeachRadar?)
+
+## OPEN QUESTIONS TO RESOLVE
+[ ] Which 5 beaches for MVP? (Bondi, Manly, Coogee, Bronte, Maroubra? Or diversify regions?)
+[ ] What counts as "busy" vs "quiet"? (Absolute count or % of beach capacity?)
+[ ] How do we verify ML accuracy? (Crowdsource reports?)
+[ ] Final brand name decision?
+
+## SUCCESS METRICS TO TRACK
+[ ] Set up analytics dashboard
+[ ] Track Daily Active Users (DAU) - Target: 500 users Month 1, 2,000 by Month 3
+[ ] Track return rate (% users return within 7 days) - Target: 40%+
+[ ] Track session duration - Target: 2-3 minutes
+[ ] Monitor cost per beach - Target: <$10/month per beach
+[ ] Track accuracy of busyness predictions
+[ ] Monitor API latency and uptime
