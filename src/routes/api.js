@@ -1,7 +1,9 @@
 /**
- * API Route Handler
+ * API Route Handler with Hono
  */
 
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import {
   getActiveBeaches,
   getBeach,
@@ -14,130 +16,109 @@ import {
 import { serveImage } from '../lib/r2.js';
 
 /**
- * Router for handling HTTP requests
+ * Create and configure the Hono app
  */
-export async function handleRequest(request, env, ctx) {
-  const url = new URL(request.url);
-  const path = url.pathname;
+export function createApp() {
+  const app = new Hono();
 
-  // CORS headers for all responses
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  };
+  // Apply CORS middleware
+  app.use('*', cors({
+    origin: '*',
+    allowMethods: ['GET', 'POST', 'OPTIONS'],
+    allowHeaders: ['Content-Type']
+  }));
 
-  // Handle CORS preflight
-  if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: corsHeaders
-    });
-  }
-
-  try {
-    // Route: GET /api/beaches - List all active beaches
-    if (path === '/api/beaches' && request.method === 'GET') {
-      const beaches = await getActiveBeaches(env.DB);
-      return jsonResponse({ beaches }, corsHeaders);
-    }
-
-    // Route: GET /api/beaches/:beachId - Get beach details
-    if (path.match(/^\/api\/beaches\/[^\/]+$/) && request.method === 'GET') {
-      const beachId = path.split('/').pop();
-      const beach = await getBeach(env.DB, beachId);
-
-      if (!beach) {
-        return jsonResponse({ error: 'Beach not found' }, corsHeaders, 404);
-      }
-
-      return jsonResponse({ beach }, corsHeaders);
-    }
-
-    // Route: GET /api/beaches/:beachId/latest - Get latest snapshot
-    if (path.match(/^\/api\/beaches\/[^\/]+\/latest$/) && request.method === 'GET') {
-      const beachId = path.split('/')[3];
-      const snapshot = await getLatestSnapshot(env.DB, beachId);
-
-      if (!snapshot) {
-        return jsonResponse({ error: 'No snapshots found for this beach' }, corsHeaders, 404);
-      }
-
-      return jsonResponse({ snapshot }, corsHeaders);
-    }
-
-    // Route: GET /api/beaches/:beachId/history - Get snapshot history
-    if (path.match(/^\/api\/beaches\/[^\/]+\/history$/) && request.method === 'GET') {
-      const beachId = path.split('/')[3];
-      const limit = parseInt(url.searchParams.get('limit') || '100');
-      const offset = parseInt(url.searchParams.get('offset') || '0');
-
-      const history = await getSnapshotHistory(env.DB, beachId, limit, offset);
-      return jsonResponse({ history, count: history.length }, corsHeaders);
-    }
-
-    // Route: GET /api/beaches/:beachId/stats - Get beach statistics
-    if (path.match(/^\/api\/beaches\/[^\/]+\/stats$/) && request.method === 'GET') {
-      const beachId = path.split('/')[3];
-      const daysBack = parseInt(url.searchParams.get('days') || '7');
-
-      const stats = await getBeachStatistics(env.DB, beachId, daysBack);
-      return jsonResponse({ stats }, corsHeaders);
-    }
-
-    // Route: GET /api/beaches/:beachId/hourly - Get hourly averages
-    if (path.match(/^\/api\/beaches\/[^\/]+\/hourly$/) && request.method === 'GET') {
-      const beachId = path.split('/')[3];
-      const daysBack = parseInt(url.searchParams.get('days') || '30');
-
-      const hourly = await getHourlyAverages(env.DB, beachId, daysBack);
-      return jsonResponse({ hourly }, corsHeaders);
-    }
-
-    // Route: GET /api/current - Get all current beach statuses
-    if (path === '/api/current' && request.method === 'GET') {
-      const snapshots = await getAllLatestSnapshots(env.DB);
-      return jsonResponse({ beaches: snapshots, count: snapshots.length }, corsHeaders);
-    }
-
-    // Route: GET /images/* - Serve images from R2
-    if (path.startsWith('/images/') && request.method === 'GET') {
-      const key = path.substring(8); // Remove '/images/' prefix
-      return await serveImage(env.IMAGES, key);
-    }
-
-    // Route: GET / - API documentation
-    if (path === '/' && request.method === 'GET') {
-      return new Response(getApiDocs(), {
-        headers: {
-          'Content-Type': 'text/html',
-          ...corsHeaders
-        }
-      });
-    }
-
-    // 404 - Not found
-    return jsonResponse({ error: 'Not found' }, corsHeaders, 404);
-
-  } catch (error) {
-    console.error('API error:', error);
-    return jsonResponse({
-      error: 'Internal server error',
-      message: error.message
-    }, corsHeaders, 500);
-  }
-}
-
-/**
- * Helper function to create JSON responses
- */
-function jsonResponse(data, headers = {}, status = 200) {
-  return new Response(JSON.stringify(data, null, 2), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers
-    }
+  // Route: GET / - API documentation
+  app.get('/', (c) => {
+    return c.html(getApiDocs());
   });
+
+  // Route: GET /api/beaches - List all active beaches
+  app.get('/api/beaches', async (c) => {
+    const beaches = await getActiveBeaches(c.env.DB);
+    return c.json({ beaches });
+  });
+
+  // Route: GET /api/beaches/:beachId - Get beach details
+  app.get('/api/beaches/:beachId', async (c) => {
+    const beachId = c.req.param('beachId');
+    const beach = await getBeach(c.env.DB, beachId);
+
+    if (!beach) {
+      return c.json({ error: 'Beach not found' }, 404);
+    }
+
+    return c.json({ beach });
+  });
+
+  // Route: GET /api/beaches/:beachId/latest - Get latest snapshot
+  app.get('/api/beaches/:beachId/latest', async (c) => {
+    const beachId = c.req.param('beachId');
+    const snapshot = await getLatestSnapshot(c.env.DB, beachId);
+
+    if (!snapshot) {
+      return c.json({ error: 'No snapshots found for this beach' }, 404);
+    }
+
+    return c.json({ snapshot });
+  });
+
+  // Route: GET /api/beaches/:beachId/history - Get snapshot history
+  app.get('/api/beaches/:beachId/history', async (c) => {
+    const beachId = c.req.param('beachId');
+    const limit = parseInt(c.req.query('limit') || '100');
+    const offset = parseInt(c.req.query('offset') || '0');
+
+    const history = await getSnapshotHistory(c.env.DB, beachId, limit, offset);
+    return c.json({ history, count: history.length });
+  });
+
+  // Route: GET /api/beaches/:beachId/stats - Get beach statistics
+  app.get('/api/beaches/:beachId/stats', async (c) => {
+    const beachId = c.req.param('beachId');
+    const daysBack = parseInt(c.req.query('days') || '7');
+
+    const stats = await getBeachStatistics(c.env.DB, beachId, daysBack);
+    return c.json({ stats });
+  });
+
+  // Route: GET /api/beaches/:beachId/hourly - Get hourly averages
+  app.get('/api/beaches/:beachId/hourly', async (c) => {
+    const beachId = c.req.param('beachId');
+    const daysBack = parseInt(c.req.query('days') || '30');
+
+    const hourly = await getHourlyAverages(c.env.DB, beachId, daysBack);
+    return c.json({ hourly });
+  });
+
+  // Route: GET /api/current - Get all current beach statuses
+  app.get('/api/current', async (c) => {
+    const snapshots = await getAllLatestSnapshots(c.env.DB);
+    return c.json({ beaches: snapshots, count: snapshots.length });
+  });
+
+  // Route: GET /images/* - Serve images from R2
+  app.get('/images/*', async (c) => {
+    const path = c.req.path;
+    const key = path.substring(8); // Remove '/images/' prefix
+    return await serveImage(c.env.IMAGES, key);
+  });
+
+  // 404 handler
+  app.notFound((c) => {
+    return c.json({ error: 'Not found' }, 404);
+  });
+
+  // Error handler
+  app.onError((err, c) => {
+    console.error('API error:', err);
+    return c.json({
+      error: 'Internal server error',
+      message: err.message
+    }, 500);
+  });
+
+  return app;
 }
 
 /**

@@ -3,26 +3,18 @@
  * Main entry point for API and scheduled tasks
  */
 
-import { handleRequest } from './routes/api.js';
+import { createApp } from './routes/api.js';
 import { scrapeBeaches } from './lib/scraper.js';
+
+// Create the Hono app instance
+const app = createApp();
 
 export default {
   /**
-   * Handle HTTP requests
+   * Handle HTTP requests using Hono
    */
   async fetch(request, env, ctx) {
-    try {
-      return await handleRequest(request, env, ctx);
-    } catch (error) {
-      console.error('Worker error:', error);
-      return new Response(JSON.stringify({
-        error: 'Internal server error',
-        message: error.message
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    return app.fetch(request, env, ctx);
   },
 
   /**

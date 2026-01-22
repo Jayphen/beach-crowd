@@ -35,12 +35,13 @@
   ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/jayphen/beach-crowd/issues"
   },
   "homepage": "https://github.com/jayphen/beach-crowd#readme",
   "dependencies": {
+    "hono": "^4.11.5",
     "playwright": "^1.57.0"
   },
   "devDependencies": {
