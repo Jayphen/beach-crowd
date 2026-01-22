@@ -2,7 +2,12 @@
  * Database helper functions for Cloudflare D1
  */
 
-import { v4 as uuidv4 } from 'uuid';
+/**
+ * Generate a UUID using Web Crypto API (available in Cloudflare Workers)
+ */
+function generateUUID() {
+  return crypto.randomUUID();
+}
 
 /**
  * Get all active beaches
@@ -62,7 +67,7 @@ export async function upsertBeach(db, beach) {
  * Create a snapshot record
  */
 export async function createSnapshot(db, snapshot) {
-  const id = snapshot.id || uuidv4();
+  const id = snapshot.id || generateUUID();
   const now = Math.floor(Date.now() / 1000);
 
   await db.prepare(`
@@ -95,7 +100,7 @@ export async function updateSnapshotStatus(db, snapshotId, status) {
  * Create a busyness score record
  */
 export async function createBusynessScore(db, score) {
-  const id = score.id || uuidv4();
+  const id = score.id || generateUUID();
   const now = Math.floor(Date.now() / 1000);
 
   await db.prepare(`

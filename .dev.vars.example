@@ -1,0 +1,12 @@
+# Development Environment Variables for Cloudflare Workers
+# Copy this file to .dev.vars for local development
+# Documentation: https://developers.cloudflare.com/workers/wrangler/configuration/#secrets
+
+# YOLO API Configuration (for crowd detection)
+# If running YOLO locally, use http://localhost:8000/detect
+# If using a remote YOLO service, set the URL and API key
+YOLO_API_ENDPOINT=http://localhost:8000/detect
+YOLO_API_KEY=dev-key-replace-in-production
+
+# Optional: Add other secrets here for local development
+# Production secrets should be set via: wrangler secret put SECRET_NAME
