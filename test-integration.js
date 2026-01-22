@@ -3,9 +3,9 @@
  * Tests the analyzeBeachCrowd function on existing screenshots
  */
 
-const { analyzeBeachCrowd, checkDependencies } = require('./yolo-integration');
-const fs = require('fs');
-const path = require('path');
+import { analyzeBeachCrowd, checkDependencies } from './yolo-integration.js';
+import fs from 'fs';
+import path from 'path';
 
 async function testIntegration() {
   console.log('\n╔════════════════════════════════════════════════════════════╗');

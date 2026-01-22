@@ -26,7 +26,7 @@
 [X] Create API endpoint: GET /api/beaches (list all monitored beaches) - COMPLETED 2026-01-23
 [x] Create API endpoint: GET /api/beaches/:id/current (current busyness)
 [X] Create API endpoint: GET /api/beaches/:id/history?range=7d (historical data) - COMPLETED 2026-01-23
-[ ] Create API endpoint: GET /api/beaches/compare?ids=bondi,manly (compare beaches)
+[x] Create API endpoint: GET /api/beaches/compare?ids=bondi,manly (compare beaches)
 
 ### Week 5-6: Frontend (SvelteKit + shadcn-svelte)
 [ ] Initialize SvelteKit project

@@ -1,50 +1,23 @@
 {
-  "name": "beach-crowd",
-  "version": "1.0.0",
-  "description": "BeachWatch - Real-time beach crowd monitoring for Sydney beaches",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test-integration.js",
-    "test:yolo": "node test-integration.js",
-    "scrape": "node multi-beach-scraper.js",
-    "scrape:bondi": "node multi-beach-scraper.js bondi",
-    "scrape:manly": "node multi-beach-scraper.js manly",
-    "scrape:coogee": "node multi-beach-scraper.js coogee",
-    "scrape:maroubra": "node multi-beach-scraper.js maroubra",
-    "scrape:all": "node multi-beach-scraper.js",
-    "install:browsers": "npx playwright install chromium",
-    "setup:python": "python3 -m venv venv && source venv/bin/activate && pip install ultralytics opencv-python pillow",
-    "deploy": "wrangler deploy",
-    "deploy:dev": "wrangler deploy --env development",
-    "deploy:prod": "wrangler deploy --env production",
-    "dev": "wrangler dev",
-    "d1:init": "wrangler d1 execute beachwatch-db --file=./schema.sql",
-    "d1:seed": "node scripts/seed-beaches.js",
-    "d1:query": "wrangler d1 execute beachwatch-db --command"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jayphen/beach-crowd.git"
-  },
-  "keywords": [
-    "beach",
-    "crowd-monitoring",
-    "yolo",
-    "computer-vision",
-    "cloudflare-workers"
-  ],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/jayphen/beach-crowd/issues"
-  },
-  "homepage": "https://github.com/jayphen/beach-crowd#readme",
-  "dependencies": {
-    "hono": "^4.11.5",
-    "playwright": "^1.57.0"
-  },
-  "devDependencies": {
-    "wrangler": "^3.96.0"
-  }
+	"name": "beach-crowd",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^7.0.0",
+		"@sveltejs/kit": "^2.49.1",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"svelte": "^5.45.6",
+		"svelte-check": "^4.3.4",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.6"
+	}
 }

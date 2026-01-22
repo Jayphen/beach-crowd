@@ -1,29 +1,23 @@
-# Node
-node_modules/
-npm-debug.log*
+node_modules
 
-# Python
-venv/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-
-# YOLOv8 Models (downloaded at runtime)
-*.pt
-yolov8*.pt
-
-# Screenshots (data files, not code)
-screenshots/
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
 
 # OS
 .DS_Store
+Thumbs.db
 
-# Cloudflare
-.wrangler/
-.dev.vars
-dist/
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
 
-# Generated files
-scripts/seed-beaches.sql
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
