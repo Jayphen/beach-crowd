@@ -1,0 +1,9 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Screenshots (data files, not code)
+screenshots/
+
+# OS
+.DS_Store
