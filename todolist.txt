@@ -9,9 +9,9 @@
 ## PHASE 1: MVP (Weeks 1-6)
 
 ### Week 1-2: Proof of Concept
-[ ] Find 5 Sydney beach webcam URLs (Bondi, Manly, Coogee, Bronte, Maroubra)
-[ ] Build Playwright scraper to capture screenshots
-[ ] Store screenshots locally with timestamp
+[x] Find 5 Sydney beach webcam URLs (Bondi, Manly, Coogee, Bronte, Maroubra)
+[x] Build Playwright scraper to capture screenshots
+[X] Store screenshots locally with timestamp - COMPLETED 2026-01-23
 [X] Set up Cloudflare D1 database schema - COMPLETED 2026-01-23
 [X] Set up Cloudflare R2 bucket for image storage - COMPLETED 2026-01-23
 [ ] Store 1 week of test data
