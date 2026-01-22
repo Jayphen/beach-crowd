@@ -1,12 +1,14 @@
 <script lang="ts">
 	import BeachMap from '$lib/components/BeachMap.svelte';
+	import BeachList from '$lib/components/BeachList.svelte';
+	import type { Beach } from '$lib/types';
 
 	// Beach data with GPS coordinates for Sydney beaches
-	let beaches = [
+	let beaches: Beach[] = [
 		{
 			id: 'bondi',
 			name: 'Bondi Beach',
-			status: 'moderate' as const,
+			status: 'moderate',
 			latitude: -33.8908,
 			longitude: 151.2743,
 			busynessScore: 65
@@ -14,7 +16,7 @@
 		{
 			id: 'manly',
 			name: 'Manly Beach',
-			status: 'quiet' as const,
+			status: 'quiet',
 			latitude: -33.7969,
 			longitude: 151.2871,
 			busynessScore: 30
@@ -22,7 +24,7 @@
 		{
 			id: 'coogee',
 			name: 'Coogee Beach',
-			status: 'busy' as const,
+			status: 'busy',
 			latitude: -33.9186,
 			longitude: 151.2586,
 			busynessScore: 85
@@ -30,7 +32,7 @@
 		{
 			id: 'maroubra',
 			name: 'Maroubra Beach',
-			status: 'quiet' as const,
+			status: 'quiet',
 			latitude: -33.9503,
 			longitude: 151.2590,
 			busynessScore: 40
@@ -49,21 +51,6 @@
 				return 'bg-red-500';
 			default:
 				return 'bg-gray-500';
-		}
-	}
-
-	function getStatusLabel(status: string) {
-		switch (status) {
-			case 'quiet':
-				return 'Quiet';
-			case 'moderate':
-				return 'Moderate';
-			case 'busy':
-				return 'Busy';
-			case 'very_busy':
-				return 'Very Busy';
-			default:
-				return 'Unknown';
 		}
 	}
 </script>
@@ -109,26 +96,16 @@
 
 		<!-- Beach Cards Section -->
 		<section class="mb-8">
-			<h2 class="text-2xl font-semibold mb-4">Monitored Beaches</h2>
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-				{#each beaches as beach}
-					<a
-						href="/beaches/{beach.id}"
-						class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
-					>
-						<h3 class="text-xl font-semibold mb-3">{beach.name}</h3>
-						<div class="flex items-center gap-2 mb-2">
-							<div class="w-4 h-4 rounded-full {getStatusColor(beach.status)}"></div>
-							<span class="text-gray-600">{getStatusLabel(beach.status)}</span>
-						</div>
-						{#if beach.busynessScore}
-							<div class="text-sm text-gray-500">
-								Busyness: {beach.busynessScore}/100
-							</div>
-						{/if}
-					</a>
-				{/each}
+			<div class="flex items-center justify-between mb-4">
+				<h2 class="text-2xl font-semibold">Monitored Beaches</h2>
+				<a
+					href="/compare"
+					class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+				>
+					Compare Beaches
+				</a>
 			</div>
+			<BeachList {beaches} />
 		</section>
 
 		<!-- About Section -->

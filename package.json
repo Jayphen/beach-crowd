@@ -48,6 +48,7 @@
   },
   "homepage": "https://github.com/jayphen/beach-crowd#readme",
   "dependencies": {
+    "chart.js": "^4.5.1",
     "hono": "^4.11.5",
     "leaflet": "^1.9.4",
     "playwright": "^1.57.0"
