@@ -2,6 +2,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const { analyzeBeachCrowd } = require('./yolo-integration');
+const { uploadScrapedResult } = require('./upload-to-cloudflare');
 
 /**
  * Multi-Beach Webcam Scraper
@@ -111,7 +112,7 @@ async function scrapeWebcam(beach, webcam, browser) {
 
     console.log(`⏱️  Duration: ${duration}s`);
 
-    return {
+    const result = {
       success: true,
       beach_id: beach.id,
       beach_name: beach.name,
@@ -125,6 +126,16 @@ async function scrapeWebcam(beach, webcam, browser) {
       url: webcam.url,
       analysis: analysisResult
     };
+
+    // Upload to Cloudflare R2 and D1 (if configured)
+    try {
+      await uploadScrapedResult(result);
+    } catch (uploadError) {
+      console.warn(`⚠️  Upload to Cloudflare failed: ${uploadError.message}`);
+      console.warn('📝 Data saved locally only');
+    }
+
+    return result;
 
   } catch (error) {
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);

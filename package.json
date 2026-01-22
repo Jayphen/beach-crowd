@@ -1,7 +1,7 @@
 {
   "name": "beach-crowd",
   "version": "1.0.0",
-  "description": "",
+  "description": "BeachWatch - Real-time beach crowd monitoring for Sydney beaches",
   "main": "index.js",
   "scripts": {
     "test": "node test-integration.js",
@@ -13,13 +13,26 @@
     "scrape:maroubra": "node multi-beach-scraper.js maroubra",
     "scrape:all": "node multi-beach-scraper.js",
     "install:browsers": "npx playwright install chromium",
-    "setup:python": "python3 -m venv venv && source venv/bin/activate && pip install ultralytics opencv-python pillow"
+    "setup:python": "python3 -m venv venv && source venv/bin/activate && pip install ultralytics opencv-python pillow",
+    "deploy": "wrangler deploy",
+    "deploy:dev": "wrangler deploy --env development",
+    "deploy:prod": "wrangler deploy --env production",
+    "dev": "wrangler dev",
+    "d1:init": "wrangler d1 execute beachwatch-db --file=./schema.sql",
+    "d1:seed": "node scripts/seed-beaches.js",
+    "d1:query": "wrangler d1 execute beachwatch-db --command"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jayphen/beach-crowd.git"
   },
-  "keywords": [],
+  "keywords": [
+    "beach",
+    "crowd-monitoring",
+    "yolo",
+    "computer-vision",
+    "cloudflare-workers"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -29,5 +42,8 @@
   "homepage": "https://github.com/jayphen/beach-crowd#readme",
   "dependencies": {
     "playwright": "^1.57.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.96.0"
   }
 }
