@@ -4,7 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scrape": "node multi-beach-scraper.js",
+    "scrape:bondi": "node multi-beach-scraper.js bondi",
+    "scrape:manly": "node multi-beach-scraper.js manly",
+    "scrape:coogee": "node multi-beach-scraper.js coogee",
+    "scrape:maroubra": "node multi-beach-scraper.js maroubra",
+    "scrape:all": "node multi-beach-scraper.js",
+    "install:browsers": "npx playwright install chromium"
   },
   "repository": {
     "type": "git",

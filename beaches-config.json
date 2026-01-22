@@ -1,0 +1,99 @@
+{
+  "beaches": [
+    {
+      "id": "bondi",
+      "name": "Bondi Beach",
+      "location": "Waverley Council, Eastern Suburbs",
+      "enabled": true,
+      "webcams": [
+        {
+          "id": "bondi-surf-club",
+          "name": "Bondi Surf Club",
+          "url": "https://bondisurfclub.com/bondi-surf-cam/",
+          "priority": 1,
+          "notes": "Live stream from Blue Room of Bondi Surf Bathers' Lifesaving Club"
+        },
+        {
+          "id": "north-bondi-slsc",
+          "name": "North Bondi SLSC",
+          "url": "https://northbondisurfclub.com/webcam/",
+          "priority": 2,
+          "notes": "Free webcam service from North Bondi Surf Life Saving Club"
+        }
+      ]
+    },
+    {
+      "id": "manly",
+      "name": "Manly Beach",
+      "location": "Northern Beaches Council",
+      "enabled": true,
+      "webcams": [
+        {
+          "id": "manly-pacific",
+          "name": "Manly Pacific Hotel",
+          "url": "https://manlypacific.com.au/live-webcam/",
+          "priority": 1,
+          "notes": "Surfline-powered webcam from beachfront hotel"
+        }
+      ]
+    },
+    {
+      "id": "coogee",
+      "name": "Coogee Beach",
+      "location": "Randwick City Council, Eastern Suburbs",
+      "enabled": true,
+      "webcams": [
+        {
+          "id": "coogee-council",
+          "name": "Randwick Council",
+          "url": "https://www.randwick.nsw.gov.au/facilities-and-recreation/explore-randwick-city/beach-cams",
+          "priority": 1,
+          "notes": "Official council beach cam - may be offline for repairs"
+        }
+      ]
+    },
+    {
+      "id": "bronte",
+      "name": "Bronte Beach",
+      "location": "Waverley Council, Eastern Suburbs",
+      "enabled": false,
+      "webcams": [],
+      "notes": "Limited webcam availability - needs investigation"
+    },
+    {
+      "id": "maroubra",
+      "name": "Maroubra Beach",
+      "location": "Randwick City Council, Eastern Suburbs",
+      "enabled": true,
+      "webcams": [
+        {
+          "id": "maroubra-brasurf",
+          "name": "Brasurf",
+          "url": "https://www.brasurf.com.au/",
+          "priority": 1,
+          "notes": "Maroubra North live surf report webcam"
+        },
+        {
+          "id": "maroubra-council",
+          "name": "Randwick Council",
+          "url": "https://www.randwick.nsw.gov.au/facilities-and-recreation/explore-randwick-city/beach-cams",
+          "priority": 2,
+          "notes": "Official council beach cam"
+        }
+      ]
+    }
+  ],
+  "scraper_config": {
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "timeout": 30000,
+    "wait_for_load": 5000,
+    "screenshots_dir": "./screenshots",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "headless": true,
+    "retry_attempts": 2,
+    "retry_delay": 3000
+  }
+}
