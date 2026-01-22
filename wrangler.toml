@@ -1,0 +1,157 @@
+# Cloudflare Workers Configuration for BeachWatch
+# Documentation: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "beachwatch"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ==============================================================================
+# Worker Settings
+# ==============================================================================
+
+# Account ID (get from: wrangler whoami)
+# account_id = "your-account-id-here"
+
+# Workers limits
+limits = { cpu_ms = 50 }
+
+# ==============================================================================
+# D1 Database Binding
+# ==============================================================================
+# After creating your D1 database, run:
+# wrangler d1 create beachwatch-db
+# Then replace the database_id below with the actual ID from the output
+
+[[d1_databases]]
+binding = "DB"                          # Access in code via env.DB
+database_name = "beachwatch-db"
+database_id = "your-database-id-here"   # Replace with actual database ID
+
+# ==============================================================================
+# R2 Bucket Binding
+# ==============================================================================
+# After creating your R2 bucket, run:
+# wrangler r2 bucket create beachwatch-images
+
+[[r2_buckets]]
+binding = "IMAGES"                      # Access in code via env.IMAGES
+bucket_name = "beachwatch-images"
+
+# ==============================================================================
+# Environment Variables
+# ==============================================================================
+# Non-secret environment variables
+# For secrets, use: wrangler secret put VARIABLE_NAME
+
+[vars]
+ENVIRONMENT = "development"
+SCRAPE_INTERVAL_MINUTES = "10"
+MAX_BEACHES_PER_SCRAPE = "5"
+IMAGE_RETENTION_DAYS = "90"
+
+# ==============================================================================
+# Cron Triggers (Scheduled Workers)
+# ==============================================================================
+# Documentation: https://developers.cloudflare.com/workers/configuration/crons/
+
+[triggers]
+crons = [
+    # Scrape all active beaches every 10 minutes
+    "*/10 * * * *",
+
+    # Update prediction models every hour at minute 5
+    # "5 * * * *",
+
+    # Daily cleanup of old images at 2 AM UTC
+    # "0 2 * * *"
+]
+
+# ==============================================================================
+# Development Environment
+# ==============================================================================
+
+[env.development]
+name = "beachwatch-dev"
+
+[env.development.vars]
+ENVIRONMENT = "development"
+
+# Use local D1 database for development
+# [[env.development.d1_databases]]
+# binding = "DB"
+# database_name = "beachwatch-db"
+# database_id = "local"
+
+# ==============================================================================
+# Production Environment
+# ==============================================================================
+
+[env.production]
+name = "beachwatch-prod"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+SCRAPE_INTERVAL_MINUTES = "10"
+
+# Production D1 database (same as default for now)
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "beachwatch-db"
+database_id = "your-production-database-id-here"
+
+# Production R2 bucket
+[[env.production.r2_buckets]]
+binding = "IMAGES"
+bucket_name = "beachwatch-images-prod"
+
+# ==============================================================================
+# Route Configuration (Optional)
+# ==============================================================================
+# If you want to use a custom domain instead of workers.dev subdomain
+# Uncomment and configure after setting up a Cloudflare zone
+
+# routes = [
+#     { pattern = "api.beachwatch.app/*", zone_name = "beachwatch.app" }
+# ]
+
+# ==============================================================================
+# Build Configuration
+# ==============================================================================
+
+# [build]
+# command = "npm run build"
+# watch_dirs = ["src"]
+
+# ==============================================================================
+# Observability
+# ==============================================================================
+
+# Tail consumers for logs
+# [tail_consumers]
+# [[tail_consumers.bindings]]
+# service = "beachwatch-logs"
+
+# ==============================================================================
+# Notes
+# ==============================================================================
+# 1. Before deploying, replace placeholder IDs with actual values:
+#    - database_id: Get from `wrangler d1 create beachwatch-db`
+#    - account_id: Get from `wrangler whoami`
+#
+# 2. Set production secrets using Wrangler CLI:
+#    wrangler secret put YOLO_API_ENDPOINT
+#    wrangler secret put YOLO_API_KEY
+#
+# 3. For local development, create a .dev.vars file:
+#    YOLO_API_ENDPOINT=http://localhost:8000/detect
+#    YOLO_API_KEY=dev-key
+#
+# 4. Deploy commands:
+#    Development: wrangler deploy --env development
+#    Production:  wrangler deploy --env production
+#
+# 5. Test locally:
+#    wrangler dev
+#
+# ==============================================================================

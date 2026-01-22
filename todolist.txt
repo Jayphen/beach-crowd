@@ -12,8 +12,8 @@
 [ ] Find 5 Sydney beach webcam URLs (Bondi, Manly, Coogee, Bronte, Maroubra)
 [ ] Build Playwright scraper to capture screenshots
 [ ] Store screenshots locally with timestamp
-[ ] Set up Cloudflare D1 database schema
-[ ] Set up Cloudflare R2 bucket for image storage
+[X] Set up Cloudflare D1 database schema - COMPLETED 2026-01-23
+[X] Set up Cloudflare R2 bucket for image storage - COMPLETED 2026-01-23
 [ ] Store 1 week of test data
 
 ### Week 3-4: Computer Vision & Backend
