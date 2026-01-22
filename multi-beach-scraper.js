@@ -1,6 +1,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+const { analyzeBeachCrowd } = require('./yolo-integration');
 
 /**
  * Multi-Beach Webcam Scraper
@@ -82,15 +83,32 @@ async function scrapeWebcam(beach, webcam, browser) {
     const stats = fs.statSync(filepath);
     const fileSizeKB = (stats.size / 1024).toFixed(2);
 
-    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-
     // Close context
     await context.close();
+
+    // Analyze screenshot with YOLOv8 person detection
+    console.log('🤖 Analyzing crowd with YOLOv8...');
+    const analysisResult = await analyzeBeachCrowd(filepath, {
+      model: 'yolov8m.pt',
+      confidence: 0.5,
+      saveAnnotated: false
+    });
+
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
     // Success!
     console.log('\n✅ SUCCESS!');
     console.log(`📁 Saved: ${filepath}`);
     console.log(`📦 Size: ${fileSizeKB} KB`);
+
+    if (analysisResult.success) {
+      console.log(`👥 People Detected: ${analysisResult.person_count}`);
+      console.log(`📊 Busyness Score: ${analysisResult.busyness_score}/100 (${analysisResult.busyness_level})`);
+      console.log(`🎯 Avg Confidence: ${analysisResult.confidence_stats.avg.toFixed(2)}`);
+    } else {
+      console.log(`⚠️  Analysis failed: ${analysisResult.error}`);
+    }
+
     console.log(`⏱️  Duration: ${duration}s`);
 
     return {
@@ -104,7 +122,8 @@ async function scrapeWebcam(beach, webcam, browser) {
       fileSize: stats.size,
       duration: parseFloat(duration),
       timestamp: new Date().toISOString(),
-      url: webcam.url
+      url: webcam.url,
+      analysis: analysisResult
     };
 
   } catch (error) {
@@ -252,6 +271,15 @@ async function scrapeAllBeaches(beachFilter = null) {
       const icon = beach.successful_webcams === beach.total_webcams ? '✅' :
                    beach.successful_webcams > 0 ? '⚠️' : '❌';
       console.log(`  ${icon} ${beach.beach_name}: ${beach.successful_webcams}/${beach.total_webcams} webcams captured`);
+
+      // Show crowd analysis for successful webcams
+      if (beach.webcams && beach.webcams.length > 0) {
+        beach.webcams.forEach(webcam => {
+          if (webcam.success && webcam.analysis && webcam.analysis.success) {
+            console.log(`     └─ 👥 ${webcam.analysis.person_count} people | 📊 ${webcam.analysis.busyness_level} (${webcam.analysis.busyness_score}/100)`);
+          }
+        });
+      }
     });
 
     if (skippedBeaches.length > 0) {

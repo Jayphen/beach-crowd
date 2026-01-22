@@ -14,7 +14,7 @@
 [X] Store screenshots locally with timestamp - COMPLETED 2026-01-23
 [X] Set up Cloudflare D1 database schema - COMPLETED 2026-01-23
 [X] Set up Cloudflare R2 bucket for image storage - COMPLETED 2026-01-23
-[ ] Store 1 week of test data
+[x] Store 1 week of test data
 
 ### Week 3-4: Computer Vision & Backend
 [ ] Integrate YOLOv8 for person detection

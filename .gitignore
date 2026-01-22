@@ -2,6 +2,18 @@
 node_modules/
 npm-debug.log*
 
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# YOLOv8 Models (downloaded at runtime)
+*.pt
+yolov8*.pt
+
 # Screenshots (data files, not code)
 screenshots/
 
