@@ -170,7 +170,7 @@ def compare_models(image_path: str, confidence_threshold: float = 0.5):
 
 if __name__ == "__main__":
     # Default test image path
-    test_image = "screenshots/bondi_2026-01-22_14-23-41.png"
+    test_image = "../../test-data/screenshots/bondi_2026-01-22_14-23-41.png"
 
     # Check if image exists
     if not os.path.exists(test_image):
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     print(f"\n{'='*70}")
     print(f"📋 NEXT STEPS")
     print(f"{'='*70}\n")
-    print(f"1. ✅ Review annotated image in screenshots/annotated/")
+    print(f"1. ✅ Review annotated image in test-data/screenshots/annotated/")
     print(f"2. 📝 Manually count people in original image for ground truth")
     print(f"3. 📊 Calculate accuracy: (Detected / Actual) × 100%")
     print(f"4. 🔍 Identify failure modes (missed detections, false positives)")
