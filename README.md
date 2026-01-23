@@ -91,35 +91,55 @@ npm run test:yolo
 
 ```
 beach-crowd/
-├── src/                      # SvelteKit frontend
-│   ├── routes/              # Page routes
-│   │   ├── +page.svelte    # Homepage with beach list
-│   │   ├── +layout.svelte  # Root layout
-│   │   └── beaches/[id]/   # Beach detail pages
-│   ├── lib/                # Shared components & utilities
-│   ├── app.html            # HTML template
-│   └── app.css             # Global styles (Tailwind)
+├── src/                           # SvelteKit frontend
+│   ├── routes/                   # Page routes
+│   │   ├── +page.svelte         # Homepage with beach list
+│   │   ├── +layout.svelte       # Root layout
+│   │   └── beaches/[id]/        # Beach detail pages
+│   ├── lib/                     # Shared components & utilities
+│   ├── app.html                 # HTML template
+│   └── app.css                  # Global styles (Tailwind)
 │
-├── worker/                  # Cloudflare Workers API
-│   ├── index.js            # Worker entry point
-│   ├── lib/
-│   │   ├── db.js          # D1 database helpers
-│   │   ├── r2.js          # R2 storage helpers
-│   │   └── scraper.js     # Scraper utilities
-│   └── routes/
-│       └── api.js         # API routes
+├── worker/                       # Cloudflare Workers API
+│   ├── index.js                 # Worker entry point
+│   ├── lib/                     # Worker libraries
+│   │   ├── db.js               # D1 database helpers
+│   │   ├── r2.js               # R2 storage helpers
+│   │   └── scraper.js          # Scraper utilities
+│   └── routes/                  # API route handlers
+│       └── api.js              # API routes
 │
-├── static/                 # Static assets
-├── screenshots/            # Captured webcam images
-├── scripts/               # Utility scripts
+├── ml/                          # Machine Learning & Computer Vision
+│   ├── models/                 # YOLO models
+│   ├── scripts/                # ML scripts (YOLO, pixel density)
+│   ├── tests/                  # ML tests
+│   └── README.md               # ML documentation
 │
-├── multi-beach-scraper.js  # Main scraper
-├── yolo-integration.js     # YOLO detection
-├── beaches-config.json     # Beach & webcam config
-├── schema.sql             # Database schema
-├── wrangler.toml          # Workers configuration
-├── svelte.config.js       # SvelteKit configuration
-└── package.json           # Dependencies & scripts
+├── scripts/                     # Utility scripts
+│   ├── scraping/               # Webcam scraping scripts
+│   ├── data/                   # Data generation & upload
+│   ├── testing/                # Test scripts
+│   └── seed-beaches.js         # Database seeding
+│
+├── docs/                        # Documentation
+│   ├── prd/                    # Product requirements
+│   ├── setup/                  # Setup guides
+│   ├── features/               # Feature documentation
+│   └── research/               # Research notes
+│
+├── config/                      # Configuration files
+│   ├── beaches-config.json     # Beach & webcam config
+│   ├── schema.sql              # Database schema
+│   └── test-data.sql           # Test data
+│
+├── test-data/                   # Test data & screenshots
+│   └── screenshots/            # Captured webcam images
+│
+├── static/                      # Static assets
+├── wrangler.toml               # Cloudflare Workers config
+├── svelte.config.js            # SvelteKit config
+├── package.json                # Dependencies & scripts
+└── todolist.txt                # Development roadmap
 ```
 
 ## API Endpoints
@@ -183,7 +203,7 @@ wrangler secret put YOLO_API_KEY
 
 ### Beach Configuration
 
-Edit `beaches-config.json` to add/modify beaches and webcam sources.
+Edit `config/beaches-config.json` to add/modify beaches and webcam sources.
 
 ### Cloudflare Resources
 
@@ -249,10 +269,12 @@ Update `wrangler.toml` with your:
 
 ## Documentation
 
-- [API Deployment Guide](./API-DEPLOYMENT.md)
-- [Cloudflare Setup](./SETUP-CLOUDFLARE-D1-R2.md)
-- [YOLO Integration](./YOLO-INTEGRATION-README.md)
-- [Scraper Documentation](./README-scraper.md)
+- [API Deployment Guide](./docs/setup/API-DEPLOYMENT.md)
+- [Cloudflare Setup](./docs/setup/SETUP-CLOUDFLARE-D1-R2.md)
+- [YOLO Integration](./docs/features/YOLO-INTEGRATION-README.md)
+- [Scraper Documentation](./scripts/scraping/README-scraper.md)
+- [Product Requirements](./docs/prd/beach-monitor-PRD.md)
+- [Validation Plan](./docs/features/validation-plan.md)
 
 ## License
 

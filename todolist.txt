@@ -41,7 +41,7 @@
 [x] Implement busyness badge component (Quiet / Moderate / Busy / Very Busy)
 [x] Make design mobile-responsive
 [x] Deploy to Cloudflare Pages
-[x] Clean up repository and organize files following CLEANUP-PLAN.md (move docs to docs/, scripts to scripts/, ML to ml/, etc.)
+[X] Clean up repository and organize files following CLEANUP-PLAN.md (move docs to docs/, scripts to scripts/, ML to ml/, etc.) - COMPLETED 2026-01-23
 [ ] Test end-to-end: scraper → analysis → API → frontend
 
 ### Week 5-6: Automation
