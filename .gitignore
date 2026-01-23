@@ -33,3 +33,5 @@ __pycache__/
 *.pt
 *.pth
 *.onnx
+screenshots/
+screenshots/

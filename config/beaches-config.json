@@ -14,18 +14,20 @@
       },
       "webcams": [
         {
-          "id": "bondi-surf-club",
-          "name": "Bondi Surf Club",
-          "url": "https://bondisurfclub.com/bondi-surf-cam/",
+          "id": "north-bondi-south-cam",
+          "name": "North Bondi SLSC - South View",
+          "url": "https://northbondisurfclub.com/webcam/",
+          "hls_stream": "https://s116.ipcamlive.com/streams/745iknrb97qx4pnuh/stream.m3u8",
           "priority": 1,
-          "notes": "Live stream from Blue Room of Bondi Surf Bathers' Lifesaving Club"
+          "notes": "South-facing cam from North Bondi SLSC - direct HLS stream"
         },
         {
-          "id": "north-bondi-slsc",
-          "name": "North Bondi SLSC",
+          "id": "north-bondi-north-cam",
+          "name": "North Bondi SLSC - North View",
           "url": "https://northbondisurfclub.com/webcam/",
+          "hls_stream": "https://s32.ipcamlive.com/streams/20y8mrlc1dowxgzvz/stream.m3u8",
           "priority": 2,
-          "notes": "Free webcam service from North Bondi Surf Life Saving Club"
+          "notes": "North-facing cam from North Bondi SLSC - direct HLS stream"
         }
       ]
     },
