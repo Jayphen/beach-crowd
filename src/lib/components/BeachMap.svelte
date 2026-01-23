@@ -20,15 +20,15 @@
 	const getStatusColor = (status: string): string => {
 		switch (status) {
 			case 'quiet':
-				return '#22c55e'; // green-500
+				return '#00D9A5';
 			case 'moderate':
-				return '#eab308'; // yellow-500
+				return '#FFD93D';
 			case 'busy':
-				return '#f97316'; // orange-500
+				return '#FF8C42';
 			case 'very_busy':
-				return '#ef4444'; // red-500
+				return '#FF4757';
 			default:
-				return '#6b7280'; // gray-500
+				return '#6b7280';
 		}
 	};
 
@@ -53,14 +53,15 @@
 
 		// Initialize map centered on Sydney
 		map = L.map(mapContainer, {
-			center: [-33.8688, 151.2093], // Sydney coordinates
+			center: [-33.8688, 151.2093],
 			zoom: 11,
-			scrollWheelZoom: true
+			scrollWheelZoom: true,
+			zoomControl: true
 		});
 
-		// Add tile layer
-		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		// Add tile layer with custom styling (CartoDB Positron for cleaner look)
+		L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 			maxZoom: 19
 		}).addTo(map);
 
@@ -68,28 +69,58 @@
 		beaches.forEach((beach) => {
 			const color = getStatusColor(beach.status);
 
+			// Create a pulsing marker effect
 			const marker = L.circleMarker([beach.latitude, beach.longitude], {
-				radius: 12,
+				radius: 14,
 				fillColor: color,
 				color: '#ffffff',
-				weight: 2,
+				weight: 3,
 				opacity: 1,
-				fillOpacity: 0.8
+				fillOpacity: 0.9
 			}).addTo(map!);
 
-			// Add popup
+			// Add outer pulse ring
+			const pulseMarker = L.circleMarker([beach.latitude, beach.longitude], {
+				radius: 20,
+				fillColor: color,
+				color: color,
+				weight: 2,
+				opacity: 0.3,
+				fillOpacity: 0.1
+			}).addTo(map!);
+
+			// Custom popup with new design
 			const statusLabel = getStatusLabel(beach.status);
-			const scoreText = beach.busynessScore ? `<br><strong>Score:</strong> ${beach.busynessScore}/100` : '';
+			const scoreText = beach.busynessScore !== undefined
+				? `<div style="margin-top: 12px; padding: 12px; background: #F5E6D3; border-radius: 12px;">
+						<div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #0A2540; opacity: 0.6; margin-bottom: 4px;">Crowd Level</div>
+						<div style="display: flex; align-items: baseline; gap: 4px;">
+							<span style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: #0A2540;">${beach.busynessScore}</span>
+							<span style="color: #0A2540; opacity: 0.4;">/100</span>
+						</div>
+					</div>`
+				: '';
+
 			marker.bindPopup(
-				`<div class="text-center">
-					<h3 class="font-semibold text-lg mb-1">${beach.name}</h3>
-					<p class="text-sm">
-						<span class="inline-block w-3 h-3 rounded-full" style="background-color: ${color}"></span>
-						<strong>Status:</strong> ${statusLabel}
-						${scoreText}
-					</p>
-					<a href="/beaches/${beach.id}" class="text-blue-600 hover:underline text-sm mt-2 block">View Details →</a>
-				</div>`
+				`<div style="font-family: 'Outfit', sans-serif; min-width: 200px; padding: 4px;">
+					<h3 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #0A2540; margin: 0 0 8px 0;">${beach.name}</h3>
+					<div style="display: flex; align-items: center; gap: 8px;">
+						<span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${color}; box-shadow: 0 0 8px ${color};"></span>
+						<span style="font-weight: 600; color: #0A2540;">${statusLabel}</span>
+					</div>
+					${scoreText}
+					<a href="/beaches/${beach.id}"
+					   style="display: block; margin-top: 16px; padding: 10px 16px; background: #FF6B4A; color: white; text-decoration: none; border-radius: 100px; text-align: center; font-weight: 600; font-size: 14px; transition: background 0.2s;"
+					   onmouseover="this.style.background='#E84A5F'"
+					   onmouseout="this.style.background='#FF6B4A'">
+						View Details
+					</a>
+				</div>`,
+				{
+					className: 'beach-popup',
+					closeButton: true,
+					maxWidth: 280
+				}
 			);
 
 			// Open popup on click
@@ -98,12 +129,13 @@
 			});
 
 			markers.push(marker);
+			markers.push(pulseMarker);
 		});
 
 		// Fit bounds to show all beaches
 		if (beaches.length > 0) {
 			const bounds = L.latLngBounds(beaches.map(b => [b.latitude, b.longitude]));
-			map.fitBounds(bounds, { padding: [50, 50] });
+			map.fitBounds(bounds, { padding: [60, 60] });
 		}
 	});
 
@@ -121,14 +153,38 @@
 		crossorigin="" />
 </svelte:head>
 
-<div bind:this={mapContainer} class="w-full h-full rounded-lg shadow-lg"></div>
+<div bind:this={mapContainer} class="w-full h-full"></div>
 
 <style>
-	:global(.leaflet-popup-content-wrapper) {
-		border-radius: 0.5rem;
+	:global(.beach-popup .leaflet-popup-content-wrapper) {
+		border-radius: 20px !important;
+		box-shadow: 0 12px 40px rgba(10, 37, 64, 0.15) !important;
+		border: none !important;
+		padding: 0 !important;
+		overflow: hidden;
 	}
 
-	:global(.leaflet-popup-content) {
-		margin: 1rem;
+	:global(.beach-popup .leaflet-popup-content) {
+		margin: 16px 20px !important;
+	}
+
+	:global(.beach-popup .leaflet-popup-tip) {
+		background: white !important;
+		box-shadow: none !important;
+	}
+
+	:global(.beach-popup .leaflet-popup-close-button) {
+		color: #0A2540 !important;
+		opacity: 0.5;
+		font-size: 20px !important;
+		width: 28px !important;
+		height: 28px !important;
+		top: 8px !important;
+		right: 8px !important;
+	}
+
+	:global(.beach-popup .leaflet-popup-close-button:hover) {
+		opacity: 1;
+		color: #FF6B4A !important;
 	}
 </style>

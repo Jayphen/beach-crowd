@@ -1,1 +1,464 @@
 @import "tailwindcss";
+
+/* ============================================
+   BEACHWATCH - SYDNEY SURF CULTURE DESIGN
+   Bold, energetic, vibrant beach lifestyle
+   ============================================ */
+
+/* Google Fonts - Distinctive typography */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap');
+
+/* CSS Custom Properties - Design Tokens */
+:root {
+  /* Primary palette - Sunset gradient colors */
+  --sunset-coral: #FF6B4A;
+  --sunset-orange: #FF8C42;
+  --sunset-gold: #FFB347;
+  --sunset-pink: #FF7B89;
+  --sunset-magenta: #E84A5F;
+
+  /* Ocean palette */
+  --ocean-deep: #0A2540;
+  --ocean-dark: #1A3A5C;
+  --ocean-teal: #2D9CCA;
+  --ocean-light: #7DD3FC;
+  --ocean-foam: #E0F7FA;
+
+  /* Sand & neutral palette */
+  --sand-light: #FEF7E9;
+  --sand-warm: #F5E6D3;
+  --sand-dark: #C4A574;
+
+  /* Status colors - vibrant variants */
+  --status-quiet: #00D9A5;
+  --status-moderate: #FFD93D;
+  --status-busy: #FF8C42;
+  --status-very-busy: #FF4757;
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+
+  /* Spacing rhythm */
+  --space-unit: 8px;
+
+  /* Animations */
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--sand-light);
+  color: var(--ocean-deep);
+  overflow-x: hidden;
+}
+
+/* Selection styling */
+::selection {
+  background: var(--sunset-coral);
+  color: white;
+}
+
+/* ============================================
+   ANIMATED BACKGROUNDS & TEXTURES
+   ============================================ */
+
+/* Grain texture overlay */
+.grain-overlay::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  z-index: 1000;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Sunset gradient background */
+.sunset-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--sunset-coral) 0%,
+    var(--sunset-orange) 25%,
+    var(--sunset-gold) 50%,
+    var(--sunset-pink) 75%,
+    var(--sunset-magenta) 100%
+  );
+}
+
+/* Ocean gradient */
+.ocean-gradient {
+  background: linear-gradient(
+    180deg,
+    var(--ocean-deep) 0%,
+    var(--ocean-dark) 50%,
+    var(--ocean-teal) 100%
+  );
+}
+
+/* Wave divider at bottom of header */
+.wave-pattern {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.wave-pattern::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100' preserveAspectRatio='none'%3E%3Cpath fill='%23FEF7E9' d='M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* ============================================
+   TYPOGRAPHY STYLES
+   ============================================ */
+
+.heading-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.heading-display-xl {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.text-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* ============================================
+   CARD & COMPONENT STYLES
+   ============================================ */
+
+/* Glass morphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 8px 32px rgba(10, 37, 64, 0.08),
+    0 2px 8px rgba(10, 37, 64, 0.04);
+}
+
+/* Solid card with warm shadow */
+.warm-card {
+  background: white;
+  box-shadow:
+    0 4px 24px rgba(255, 107, 74, 0.08),
+    0 1px 4px rgba(10, 37, 64, 0.04);
+  transition: all 0.4s var(--ease-smooth);
+}
+
+.warm-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(255, 107, 74, 0.15),
+    0 4px 12px rgba(10, 37, 64, 0.08);
+}
+
+/* Status indicator dots with glow */
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  opacity: 0.4;
+  background: inherit;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+}
+
+.status-quiet { background: var(--status-quiet); }
+.status-moderate { background: var(--status-moderate); }
+.status-busy { background: var(--status-busy); }
+.status-very-busy { background: var(--status-very-busy); }
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+
+.btn-primary {
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 100px;
+  background: var(--sunset-coral);
+  color: white;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s var(--ease-smooth);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--sunset-coral), var(--sunset-magenta));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 107, 74, 0.4);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary span {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-secondary {
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--ocean-deep);
+  border: 2px solid var(--ocean-deep);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-smooth);
+}
+
+.btn-secondary:hover {
+  background: var(--ocean-deep);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   ANIMATIONS & MICRO-INTERACTIONS
+   ============================================ */
+
+/* Staggered fade in */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s var(--ease-smooth) forwards;
+  opacity: 0;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* Scale in */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s var(--ease-smooth) forwards;
+  opacity: 0;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Shimmer effect for loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--sand-light) 25%,
+    var(--sand-warm) 50%,
+    var(--sand-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ============================================
+   PROGRESS BAR STYLES
+   ============================================ */
+
+.progress-bar {
+  height: 8px;
+  border-radius: 100px;
+  background: var(--sand-warm);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.6s var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* ============================================
+   MAP OVERRIDES
+   ============================================ */
+
+.leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(10, 37, 64, 0.15) !important;
+  border: none !important;
+  font-family: var(--font-body) !important;
+}
+
+.leaflet-popup-content {
+  margin: 16px 20px !important;
+}
+
+.leaflet-popup-tip {
+  box-shadow: none !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(10, 37, 64, 0.1) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  font-family: var(--font-body) !important;
+  color: var(--ocean-deep) !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--sunset-coral) !important;
+  color: white !important;
+}
+
+/* ============================================
+   CHART.JS OVERRIDES
+   ============================================ */
+
+canvas {
+  font-family: var(--font-body) !important;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sand-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sand-dark);
+  border-radius: 100px;
+  border: 3px solid var(--sand-light);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sunset-coral);
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+@media (max-width: 640px) {
+  .heading-display-xl {
+    font-size: 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
