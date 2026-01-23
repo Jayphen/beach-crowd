@@ -191,41 +191,72 @@
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 			<!-- Left Column: Webcam and Current Status -->
 			<div class="lg:col-span-2 space-y-4 sm:space-y-6">
-				<!-- Live Webcam -->
+				<!-- Latest Snapshot -->
 				<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-					<h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Live Webcam</h2>
+					<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+						<h2 class="text-xl sm:text-2xl font-semibold">Latest Snapshot</h2>
+						{#if data.webcams.length > 0}
+							<a
+								href={data.webcams[0].url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-blue-600 hover:text-blue-700 text-xs sm:text-sm whitespace-nowrap"
+							>
+								View live webcam →
+							</a>
+						{/if}
+					</div>
+
+					{#if data.beach.imageUrl}
+						<div class="aspect-video bg-gray-900 rounded-lg overflow-hidden">
+							<img
+								src={data.beach.imageUrl}
+								alt="Latest beach snapshot"
+								class="w-full h-full object-cover"
+							/>
+						</div>
+						{#if data.beach.capturedAt}
+							<p class="text-sm text-gray-600 mt-2">
+								Captured {formatDateTime(data.beach.capturedAt)}
+							</p>
+						{/if}
+					{:else}
+						<div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
+							<div class="text-center">
+								<p class="text-gray-500 mb-2">No snapshot available yet</p>
+								{#if data.webcams.length > 0}
+									<a
+										href={data.webcams[0].url}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="text-blue-600 hover:text-blue-700 text-sm"
+									>
+										View live webcam
+									</a>
+								{/if}
+							</div>
+						</div>
+					{/if}
+
+					<!-- Webcam links -->
 					{#if data.webcams.length > 0}
-						<div class="space-y-4">
-							{#each data.webcams as webcam}
-								<div class="border rounded-lg p-3 sm:p-4">
-									<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-										<h3 class="font-medium text-sm sm:text-base">{webcam.name}</h3>
+						<div class="mt-4 pt-4 border-t">
+							<h3 class="text-sm font-semibold mb-2">Available Webcams</h3>
+							<div class="space-y-2">
+								{#each data.webcams as webcam}
+									<div class="flex items-center justify-between text-sm">
+										<span class="text-gray-700">{webcam.name}</span>
 										<a
 											href={webcam.url}
 											target="_blank"
 											rel="noopener noreferrer"
-											class="text-blue-600 hover:text-blue-700 text-xs sm:text-sm whitespace-nowrap"
+											class="text-blue-600 hover:text-blue-700"
 										>
-											Open in new tab →
+											Open →
 										</a>
 									</div>
-									<div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-										<iframe
-											src={webcam.url}
-											class="w-full h-full rounded-lg"
-											title={webcam.name}
-											allow="fullscreen"
-										></iframe>
-									</div>
-									{#if webcam.notes}
-										<p class="text-sm text-gray-600 mt-2">{webcam.notes}</p>
-									{/if}
-								</div>
-							{/each}
-						</div>
-					{:else}
-						<div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-							<p class="text-gray-500">No webcam available for this beach</p>
+								{/each}
+							</div>
 						</div>
 					{/if}
 				</div>

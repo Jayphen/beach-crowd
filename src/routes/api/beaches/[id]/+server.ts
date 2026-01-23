@@ -63,8 +63,8 @@ export const GET: RequestHandler = async ({ params, platform }) => {
 		}
 
 		// Format the response
-		const response = {
-			id: result.id,
+		const beach = {
+			beach_id: result.id,
 			name: result.name,
 			location: result.location,
 			latitude: result.latitude,
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ params, platform }) => {
 			confidence: result.confidence
 		};
 
-		return json(response);
+		return json({ beach });
 	} catch (e: any) {
 		console.error('Error fetching beach data:', e);
 		throw error(500, e.message || 'Failed to fetch beach data');

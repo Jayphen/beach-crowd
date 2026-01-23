@@ -6,7 +6,14 @@ declare global {
 		// interface Locals {}
 		// interface PageData {}
 		// interface PageState {}
-		// interface Platform {}
+		interface Platform {
+			env: {
+				DB: D1Database;
+				IMAGES: R2Bucket;
+			};
+			context: ExecutionContext;
+			caches: CacheStorage;
+		}
 	}
 }
 
