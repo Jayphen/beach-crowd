@@ -189,21 +189,21 @@
 
 				<!-- Comparison Summary -->
 				{#if data.comparisonData.beaches.length > 1}
-					<div class="mt-8 bg-white rounded-lg shadow-md p-6">
-						<h3 class="text-xl font-semibold mb-4">Quick Summary</h3>
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<div class="mt-6 sm:mt-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
+						<h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Quick Summary</h3>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
 							<div>
-								<h4 class="font-medium text-gray-700 mb-2">🟢 Least Crowded</h4>
+								<h4 class="text-sm sm:text-base font-medium text-gray-700 mb-2">🟢 Least Crowded</h4>
 								{#each data.comparisonData.beaches.sort((a, b) => a.busyness_score - b.busyness_score).slice(0, 1) as beach}
-									<p class="text-lg font-semibold text-green-700">{beach.beach_name}</p>
-									<p class="text-sm text-gray-600">Score: {beach.busyness_score}/100</p>
+									<p class="text-base sm:text-lg font-semibold text-green-700">{beach.beach_name}</p>
+									<p class="text-xs sm:text-sm text-gray-600">Score: {beach.busyness_score}/100</p>
 								{/each}
 							</div>
 							<div>
-								<h4 class="font-medium text-gray-700 mb-2">🔴 Most Crowded</h4>
+								<h4 class="text-sm sm:text-base font-medium text-gray-700 mb-2">🔴 Most Crowded</h4>
 								{#each data.comparisonData.beaches.sort((a, b) => b.busyness_score - a.busyness_score).slice(0, 1) as beach}
-									<p class="text-lg font-semibold text-red-700">{beach.beach_name}</p>
-									<p class="text-sm text-gray-600">Score: {beach.busyness_score}/100</p>
+									<p class="text-base sm:text-lg font-semibold text-red-700">{beach.beach_name}</p>
+									<p class="text-xs sm:text-sm text-gray-600">Score: {beach.busyness_score}/100</p>
 								{/each}
 							</div>
 						</div>

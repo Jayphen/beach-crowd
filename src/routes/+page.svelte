@@ -56,10 +56,10 @@
 </script>
 
 <div class="min-h-screen bg-gray-50">
-	<header class="bg-blue-600 text-white py-8">
+	<header class="bg-blue-600 text-white py-6 sm:py-8">
 		<div class="container mx-auto px-4">
-			<h1 class="text-4xl font-bold">BeachWatch</h1>
-			<p class="text-blue-100 mt-2">Real-time beach crowd monitoring for Sydney beaches</p>
+			<h1 class="text-2xl sm:text-3xl md:text-4xl font-bold">BeachWatch</h1>
+			<p class="text-sm sm:text-base text-blue-100 mt-2">Real-time beach crowd monitoring for Sydney beaches</p>
 		</div>
 	</header>
 
@@ -67,9 +67,9 @@
 		<!-- Interactive Map Section -->
 		<section class="mb-8">
 			<div class="bg-white rounded-lg shadow-md p-4">
-				<div class="flex items-center justify-between mb-4">
-					<h2 class="text-2xl font-semibold">Sydney Beach Map</h2>
-					<div class="flex items-center gap-4 text-sm">
+				<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+					<h2 class="text-xl sm:text-2xl font-semibold">Sydney Beach Map</h2>
+					<div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
 						<div class="flex items-center gap-2">
 							<div class="w-3 h-3 rounded-full bg-green-500"></div>
 							<span>Quiet</span>
@@ -88,7 +88,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="h-[500px] rounded-lg overflow-hidden">
+				<div class="h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden">
 					<BeachMap {beaches} />
 				</div>
 			</div>
@@ -96,11 +96,11 @@
 
 		<!-- Beach Cards Section -->
 		<section class="mb-8">
-			<div class="flex items-center justify-between mb-4">
-				<h2 class="text-2xl font-semibold">Monitored Beaches</h2>
+			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+				<h2 class="text-xl sm:text-2xl font-semibold">Monitored Beaches</h2>
 				<a
 					href="/compare"
-					class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+					class="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition-colors text-center"
 				>
 					Compare Beaches
 				</a>
@@ -109,13 +109,13 @@
 		</section>
 
 		<!-- About Section -->
-		<section class="bg-white rounded-lg shadow-md p-6">
-			<h2 class="text-2xl font-semibold mb-4">About BeachWatch</h2>
-			<p class="text-gray-600 mb-4">
+		<section class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+			<h2 class="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">About BeachWatch</h2>
+			<p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">
 				BeachWatch provides real-time crowd monitoring for Sydney's most popular beaches using
 				computer vision and webcam analysis.
 			</p>
-			<p class="text-gray-600">
+			<p class="text-sm sm:text-base text-gray-600">
 				Get instant updates on beach conditions to help you choose the perfect time and location
 				for your beach visit.
 			</p>
