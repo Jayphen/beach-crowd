@@ -13,7 +13,7 @@ const {
   calculateBusynessScoreWithArea,
   calculateBusynessScore,
   getBusynessLevel
-} = require('./yolo-integration');
+} = require('../../ml/scripts/yolo-integration');
 
 // Test utilities
 let testsPassed = 0;

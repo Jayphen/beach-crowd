@@ -3,7 +3,7 @@
  * Tests the analyzeBeachCrowd function on existing screenshots
  */
 
-import { analyzeBeachCrowd, checkDependencies } from './yolo-integration.js';
+import { analyzeBeachCrowd, checkDependencies } from '../../ml/scripts/yolo-integration.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -25,14 +25,14 @@ async function testIntegration() {
   }
 
   // Find test images
-  const screenshotsDir = './screenshots';
+  const screenshotsDir = './test-data/screenshots';
   const screenshots = fs.readdirSync(screenshotsDir)
     .filter(f => f.endsWith('.png'))
     .map(f => path.join(screenshotsDir, f))
     .slice(0, 3); // Test first 3 images
 
   if (screenshots.length === 0) {
-    console.log('\n❌ No screenshots found in ./screenshots/');
+    console.log('\n❌ No screenshots found in ./test-data/screenshots/');
     console.log('   Run "npm run scrape" first to capture beach images');
     process.exit(1);
   }

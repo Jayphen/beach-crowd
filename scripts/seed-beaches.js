@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load beaches configuration
-const config = JSON.parse(fs.readFileSync('./beaches-config.json', 'utf-8'));
+const config = JSON.parse(fs.readFileSync('./config/beaches-config.json', 'utf-8'));
 const { beaches } = config;
 
 /**

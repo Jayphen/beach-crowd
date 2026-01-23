@@ -33,14 +33,15 @@
 [x] Set up shadcn-svelte component library
 [x] Configure Tailwind CSS
 [X] Build Home page: Map of Sydney beaches with color-coded busyness - COMPLETED 2026-01-23
-[ ] Build Beach Detail page: Live webcam + graph + predictions
-[ ] Build Compare page: Side-by-side comparison
-[ ] Implement beach list with shadcn-svelte components
-[ ] Show live busyness score + last captured image
-[ ] Display 7-day historical graph (Chart.js or D3.js)
-[ ] Implement busyness badge component (Quiet / Moderate / Busy / Very Busy)
-[ ] Make design mobile-responsive
-[ ] Deploy to Cloudflare Pages
+[x] Build Beach Detail page: Live webcam + graph + predictions
+[x] Build Compare page: Side-by-side comparison
+[x] Implement beach list with shadcn-svelte components
+[x] Show live busyness score + last captured image
+[x] Display 7-day historical graph (Chart.js or D3.js)
+[x] Implement busyness badge component (Quiet / Moderate / Busy / Very Busy)
+[x] Make design mobile-responsive
+[x] Deploy to Cloudflare Pages
+[x] Clean up repository and organize files following CLEANUP-PLAN.md (move docs to docs/, scripts to scripts/, ML to ml/, etc.)
 [ ] Test end-to-end: scraper → analysis → API → frontend
 
 ### Week 5-6: Automation

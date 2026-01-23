@@ -103,8 +103,8 @@ def test_person_detection(image_path: str, model_name: str = "yolov8m.pt", confi
         print(f"   Low (<0.5): {low_conf} people")
 
     # Save annotated image
-    output_dir = Path("screenshots/annotated")
-    output_dir.mkdir(exist_ok=True)
+    output_dir = Path("../../test-data/screenshots/annotated")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     image_name = Path(image_path).stem
     output_path = output_dir / f"{image_name}_annotated.jpg"

@@ -1,8 +1,8 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
-const { analyzeBeachCrowd } = require('./yolo-integration');
-const { uploadScrapedResult } = require('./upload-to-cloudflare');
+const { analyzeBeachCrowd } = require('../../ml/scripts/yolo-integration');
+const { uploadScrapedResult } = require('../data/upload-to-cloudflare');
 
 /**
  * Multi-Beach Webcam Scraper
@@ -10,7 +10,7 @@ const { uploadScrapedResult } = require('./upload-to-cloudflare');
  */
 
 // Load configuration
-const config = JSON.parse(fs.readFileSync('./beaches-config.json', 'utf-8'));
+const config = JSON.parse(fs.readFileSync('../../config/beaches-config.json', 'utf-8'));
 const { beaches, scraper_config } = config;
 
 // Create screenshots directory if it doesn't exist
@@ -397,7 +397,7 @@ AVAILABLE BEACHES:
 ${beaches.map(b => `  • ${b.id.padEnd(12)} - ${b.name} ${b.enabled ? '✅' : '❌ (disabled)'}`).join('\n')}
 
 CONFIGURATION:
-  Edit beaches-config.json to:
+  Edit config/beaches-config.json to:
   - Add/remove beaches
   - Enable/disable beaches
   - Configure webcam URLs

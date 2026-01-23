@@ -15,13 +15,13 @@
 const {
   analyzeBeachCrowd,
   detectPersonsPixelDensity
-} = require('./yolo-integration');
+} = require('../../ml/scripts/yolo-integration');
 const fs = require('fs');
 const path = require('path');
 
 // Find test image
 function findTestImage() {
-  const screenshotsDir = './screenshots';
+  const screenshotsDir = './test-data/screenshots';
 
   if (!fs.existsSync(screenshotsDir)) {
     console.error('❌ Screenshots directory not found. Please run the scraper first.');
@@ -34,7 +34,7 @@ function findTestImage() {
     .reverse(); // Get most recent
 
   if (files.length === 0) {
-    console.error('❌ No test images found in screenshots/. Please run the scraper first.');
+    console.error('❌ No test images found in test-data/screenshots/. Please run the scraper first.');
     process.exit(1);
   }
 
@@ -142,7 +142,7 @@ async function main() {
       console.log(`      Edge Activity: ${result3.analysis.edge_percentage}%`);
       console.log(`      Combined Activity: ${result3.analysis.activity_percentage}%`);
       console.log(`      Weighted Score: ${result3.analysis.weighted_activity}`);
-      console.log(`\n   🎨 Debug visualizations saved to: screenshots/pixel_density_debug/`);
+      console.log(`\n   🎨 Debug visualizations saved to: test-data/screenshots/pixel_density_debug/`);
     } else {
       console.log(`❌ Failed: ${result3.error}`);
     }

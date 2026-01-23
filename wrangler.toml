@@ -13,8 +13,8 @@ compatibility_flags = ["nodejs_compat"]
 # Account ID (get from: wrangler whoami)
 # account_id = "your-account-id-here"
 
-# Workers limits
-limits = { cpu_ms = 50 }
+# Workers limits (CPU limits require paid plan)
+# limits = { cpu_ms = 50 }
 
 # Assets directory for SvelteKit static files
 [assets]
@@ -31,7 +31,7 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"                          # Access in code via env.DB
 database_name = "beachwatch-db"
-database_id = "your-database-id-here"   # Replace with actual database ID
+database_id = "e55bafda-8330-44cb-8648-38b67a7facb7"
 
 # ==============================================================================
 # R2 Bucket Binding
