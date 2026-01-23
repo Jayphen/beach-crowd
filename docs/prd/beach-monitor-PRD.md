@@ -362,7 +362,18 @@ Table beach_snapshots {
 |--------|------------|-----------------|-------|
 | Standard YOLO (0.5 conf) | High | ~6-11 | Misses distant figures |
 | Standard YOLO (0.25 conf) | Medium | ~11-15 | Some improvement |
-| **Image Slicing (0.15 conf)** | Low-Med | **52-58** | Best for beach webcams |
+| **Image Slicing (0.15 conf)** | Low-Med | **52-62** | Best for beach webcams |
+
+**Model Comparison (with image slicing, conf=0.15):**
+
+| Model | Size | Detections | Pi 5 Speed (est.) |
+|-------|------|------------|-------------------|
+| yolov8n | 6MB | 42 | ~1-2s |
+| **yolov8s** | **22MB** | **62** | **~3-5s** |
+| yolov8m | 50MB | 58 | ~8-15s |
+| yolov8x | 130MB | 58 | ~45s+ |
+
+**Key Finding:** YOLOv8s (small, 22MB) outperforms larger models for beach detection!
 
 **Image Slicing Algorithm:**
 1. Split 1920x1088 image into overlapping 640x640 tiles (25% overlap)
@@ -370,6 +381,36 @@ Table beach_snapshots {
 3. Merge detections back to original coordinates
 4. Apply NMS (IoU 0.4) to remove duplicates
 5. Also run full-image detection to catch larger/closer people
+
+---
+
+## **Appendix D: Raspberry Pi Deployment**
+
+**Recommended Setup:**
+- Raspberry Pi 5 (8GB) or Pi 4 (4GB)
+- YOLOv8s model (22MB) - best accuracy for size
+- NCNN export for 2x faster inference
+
+**Script:** `ml/scripts/pi-detector.py`
+
+```bash
+# Install on Pi
+pip install ultralytics opencv-python-headless numpy
+
+# Basic usage
+python pi-detector.py beach.jpg
+
+# Capture from HLS stream and analyze
+python pi-detector.py --capture --stream "https://s116.ipcamlive.com/..." --json
+
+# Export to NCNN for faster inference
+python -c "from ultralytics import YOLO; YOLO('yolov8s.pt').export(format='ncnn')"
+```
+
+**Performance on Pi 5:**
+- HLS capture: ~7-9 seconds
+- Detection (yolov8s): ~3-5 seconds
+- Total pipeline: ~12-15 seconds per beach
 
 ---
 
