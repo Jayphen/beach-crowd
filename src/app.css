@@ -5,8 +5,7 @@
    Bold, energetic, vibrant beach lifestyle
    ============================================ */
 
-/* Google Fonts - Distinctive typography */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap');
+/* Google Fonts loaded via app.html */
 
 /* CSS Custom Properties - Design Tokens */
 :root {
@@ -129,7 +128,7 @@ body {
 
 .heading-display {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
 }
