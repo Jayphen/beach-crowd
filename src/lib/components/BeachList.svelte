@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
+	import BusynessBadge from '$lib/components/BusynessBadge.svelte';
 	import type { Beach } from '$lib/types';
 
 	interface Props {
@@ -8,36 +8,6 @@
 	}
 
 	let { beaches }: Props = $props();
-
-	function getStatusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-		switch (status) {
-			case 'quiet':
-				return 'secondary';
-			case 'moderate':
-				return 'outline';
-			case 'busy':
-				return 'default';
-			case 'very_busy':
-				return 'destructive';
-			default:
-				return 'outline';
-		}
-	}
-
-	function getStatusLabel(status: string): string {
-		switch (status) {
-			case 'quiet':
-				return 'Quiet';
-			case 'moderate':
-				return 'Moderate';
-			case 'busy':
-				return 'Busy';
-			case 'very_busy':
-				return 'Very Busy';
-			default:
-				return 'Unknown';
-		}
-	}
 
 	function getStatusColor(status: string): string {
 		switch (status) {
@@ -70,9 +40,7 @@
 					<div class="space-y-3">
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-muted-foreground">Status</span>
-							<Badge variant={getStatusVariant(beach.status)}>
-								{getStatusLabel(beach.status)}
-							</Badge>
+							<BusynessBadge status={beach.status} />
 						</div>
 						{#if beach.busynessScore !== undefined}
 							<div class="space-y-2">
