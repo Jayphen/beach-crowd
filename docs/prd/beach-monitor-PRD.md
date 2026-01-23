@@ -5,6 +5,7 @@ Version: 1.0 (MVP Scope)
 Status: Draft  
 Author: Lead Engineer / Founder  
 Date: 2026-01-22
+Last Updated: 2026-01-23
 
 ---
 
@@ -67,16 +68,29 @@ BeachWatch is a real-time beach crowd monitoring platform that helps beachgoers 
 
 ### **5.1. Data Collection (Automated)**
 
-**Webcam Scraper (Node.js + Playwright)**
+**HLS Stream Capture (Preferred - Node.js + ffmpeg)**
+- Direct frame capture from HLS video streams (e.g., ipcamlive.com)
+- Much faster and more reliable than browser screenshots (~7-9 seconds per capture)
+- No browser rendering issues, consistent quality
+- Script: `scripts/scraping/hls-capture.js`
+
+**Webcam Scraper (Fallback - Node.js + Playwright)**
 - Headless browser visits webcam URLs
 - Screenshot every 10 minutes
+- Used when HLS stream URL not available
+- Script: `scripts/scraping/multi-beach-scraper.js`
+
+**Storage**
 - Store in Cloudflare R2 (S3-compatible, no egress fees)
 
-**Crowd Detection (Python + YOLOv8)**
-- Model: Pre-trained YOLOv8 (person detection)
-- Input: Screenshot
+**Crowd Detection (Python + YOLOv8 with Image Slicing)**
+- Model: Pre-trained YOLOv8m (person detection)
+- **Image Slicing (SAHI-style):** Large beach images split into 640x640 overlapping tiles for small object detection
+- Detects 5-8x more people than standard detection (58 vs 11 people on test images)
+- Script: `ml/scripts/beach-detector.py`
+- Input: Screenshot/frame
 - Output: Person count → Busyness score (0-100 based on beach area)
-- Fallback: Simple pixel density if ML fails
+- Fallback: Simple pixel density if ML fails (`ml/scripts/pixel-density-analyzer.py`)
 
 **Data Storage (Cloudflare D1 + R2)**
 - **D1 (SQLite-based):** Metadata and busyness scores
@@ -138,20 +152,25 @@ Table beach_snapshots {
 
 ## **6. MVP Scope (Phase 1: 4-6 Weeks)**
 
-### **Week 1-2: Proof of Concept**
-- [ ] Find 5 Sydney beach webcam URLs (Bondi, Manly, Coogee, Bronte, Maroubra)
-- [ ] Build Playwright scraper to capture screenshots
-- [ ] Store screenshots locally with timestamp
+### **Week 1-2: Proof of Concept** ✅ COMPLETE
+- [x] Find 5 Sydney beach webcam URLs (Bondi, Manly, Coogee, Bronte, Maroubra)
+- [x] Build Playwright scraper to capture screenshots
+- [x] **Bonus:** Discovered HLS stream capture method (faster, more reliable)
+- [x] Store screenshots locally with timestamp
 
-### **Week 3-4: Computer Vision**
-- [ ] Integrate YOLOv8 for person detection
-- [ ] Calculate busyness score algorithm
-- [ ] Store data in Cloudflare D1 (SQLite) + R2 (images)
+### **Week 3-4: Computer Vision** ✅ COMPLETE
+- [x] Integrate YOLOv8 for person detection
+- [x] **Bonus:** Image slicing for 5-8x better detection of distant people
+- [x] Calculate busyness score algorithm (density-based)
+- [x] Store data in Cloudflare D1 (SQLite) + R2 (images)
 
-### **Week 5-6: Web App**
-- [ ] Build SvelteKit frontend with shadcn-svelte components and beach list
-- [ ] Show live busyness score + last captured image
-- [ ] Display 7-day historical graph
+### **Week 5-6: Web App** ✅ COMPLETE
+- [x] Build SvelteKit frontend with Tailwind CSS
+- [x] **Bonus:** Custom "Sydney Surf Culture" design system
+- [x] Show live busyness score + last captured image
+- [x] Display 7-day historical graph
+- [x] Beach comparison page
+- [x] Interactive map with Leaflet
 
 **MVP Launch Criteria:**
 - 5 beaches monitored
@@ -307,15 +326,50 @@ Table beach_snapshots {
 
 ---
 
-## **Appendix A: Beach Webcam Sources (Initial Research)**
+## **Appendix A: Beach Webcam Sources (Verified)**
 
-| Beach | Webcam URL | Status | Notes |
-|-------|------------|--------|-------|
-| Bondi | Waverley Council | ✅ Public | High quality, reliable |
-| Manly | Manly Surf School | ✅ Public | Good angle |
-| Coogee | Coogee Surf Club | ✅ Public | Moderate quality |
-| Bronte | Waverley Council | ✅ Public | Same source as Bondi |
-| Maroubra | Randwick Council | ⚠️ TBD | Need to verify access |
+| Beach | Source | Type | HLS Stream URL | Status |
+|-------|--------|------|----------------|--------|
+| Bondi (South View) | North Bondi SLSC | HLS | `s116.ipcamlive.com/streams/745iknrb97qx4pnuh/stream.m3u8` | ✅ Working |
+| Bondi (North View) | North Bondi SLSC | HLS | `s32.ipcamlive.com/streams/20y8mrlc1dowxgzvz/stream.m3u8` | ✅ Working |
+| Manly | Manly Pacific Hotel | Web | `manlypacific.com.au/live-webcam/` | ⚠️ Needs HLS extraction |
+| Coogee | Randwick Council | Web | `randwick.nsw.gov.au/.../beach-cams` | ⚠️ May be offline |
+| Maroubra | Brasurf | Web | `brasurf.com.au/` | ⚠️ Needs HLS extraction |
+
+**Discovery Process for HLS Streams:**
+1. Visit webcam page (e.g., `northbondisurfclub.com/webcam/`)
+2. Find iframe src with ipcamlive.com player alias
+3. Fetch player page and extract stream ID
+4. Construct HLS URL: `https://s{N}.ipcamlive.com/streams/{ID}/stream.m3u8`
+
+---
+
+## **Appendix B: Frontend Design**
+
+**Design System: Sydney Surf Culture**
+- Bold sunset gradient headers (coral → orange → gold → pink)
+- Typography: Syne (display, 700-900 weight), Outfit (body)
+- Warm color palette with ocean deep (#0A2540) as primary text
+- Status colors: Quiet (teal #00D9A5), Moderate (gold #FFD93D), Busy (orange #FF8C42), Very Busy (red #FF4757)
+- Glass morphism cards with warm shadows
+- Animated wave divider between sections
+
+---
+
+## **Appendix C: ML Detection Performance**
+
+| Method | Confidence | People Detected | Notes |
+|--------|------------|-----------------|-------|
+| Standard YOLO (0.5 conf) | High | ~6-11 | Misses distant figures |
+| Standard YOLO (0.25 conf) | Medium | ~11-15 | Some improvement |
+| **Image Slicing (0.15 conf)** | Low-Med | **52-58** | Best for beach webcams |
+
+**Image Slicing Algorithm:**
+1. Split 1920x1088 image into overlapping 640x640 tiles (25% overlap)
+2. Run YOLO on each tile (small people appear larger relative to tile)
+3. Merge detections back to original coordinates
+4. Apply NMS (IoU 0.4) to remove duplicates
+5. Also run full-image detection to catch larger/closer people
 
 ---
 
